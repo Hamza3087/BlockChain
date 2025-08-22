@@ -1,0 +1,20 @@
+{
+  "mint_id": "474e719f-8650-4d76-951d-3c5899f0b15f",
+  "tree_address": "49h5iPbEHWfoLqB6Q5CUvMGwsesKefXZ5bsr54SoVmLh",
+  "recipient": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+  "metadata": {
+    "name": "Regular Test NFT",
+    "symbol": "CNFT",
+    "description": "A regular test NFT",
+    "image": "https://example.com/regular.jpg",
+    "external_url": null,
+    "attributes": [],
+    "properties": {}
+  },
+  "status": "confirmed",
+  "signature": "mint_474e719f-8650-4d76-951d-3c5899f0b15f_1755808813",
+  "leaf_index": 0,
+  "asset_id": "asset_1decb923245fa611",
+  "error_message": null,
+  "timestamp": 1755808811.9105313
+}

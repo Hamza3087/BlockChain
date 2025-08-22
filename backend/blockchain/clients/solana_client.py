@@ -419,6 +419,40 @@ class SolanaClient:
         """Get accounts owned by a program."""
         return await self._make_rpc_call_with_retry("get_program_accounts", pubkey, encoding)
 
+    # Merkle Tree specific methods for compressed NFTs
+
+    async def get_account_info_with_commitment(self, pubkey: Pubkey, commitment: str = "confirmed") -> RPCResponse:
+        """Get account info with specific commitment level."""
+        return await self._make_rpc_call_with_retry("get_account_info", pubkey, {"commitment": commitment})
+
+    async def get_multiple_accounts(self, pubkeys: List[Pubkey], encoding: str = "base64") -> RPCResponse:
+        """Get multiple account information in a single call."""
+        return await self._make_rpc_call_with_retry("get_multiple_accounts", pubkeys, {"encoding": encoding})
+
+    async def simulate_transaction(self, transaction, commitment: str = "confirmed") -> RPCResponse:
+        """Simulate a transaction before sending."""
+        return await self._make_rpc_call_with_retry("simulate_transaction", transaction, {"commitment": commitment})
+
+    async def get_recent_blockhash(self, commitment: str = "confirmed") -> RPCResponse:
+        """Get recent blockhash for transaction building."""
+        return await self._make_rpc_call_with_retry("get_recent_blockhash", {"commitment": commitment})
+
+    async def get_minimum_balance_for_rent_exemption(self, data_length: int) -> RPCResponse:
+        """Get minimum balance required for rent exemption."""
+        return await self._make_rpc_call_with_retry("get_minimum_balance_for_rent_exemption", data_length)
+
+    async def send_transaction_with_opts(self, transaction, opts: Dict[str, Any]) -> RPCResponse:
+        """Send transaction with custom options."""
+        return await self._make_rpc_call_with_retry("send_transaction", transaction, opts)
+
+    async def get_signature_statuses(self, signatures: List[str]) -> RPCResponse:
+        """Get status of multiple transaction signatures."""
+        return await self._make_rpc_call_with_retry("get_signature_statuses", signatures)
+
+    async def get_confirmed_transaction(self, signature: str, encoding: str = "json") -> RPCResponse:
+        """Get confirmed transaction details."""
+        return await self._make_rpc_call_with_retry("get_confirmed_transaction", signature, encoding)
+
     def get_sync_client(self) -> Optional[Client]:
         """Get synchronous client for blocking operations."""
         if not self.current_endpoint:

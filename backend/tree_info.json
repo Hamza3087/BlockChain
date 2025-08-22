@@ -1,0 +1,20 @@
+{
+  "tree_address": "fGyJgYa19DsNuXMnjbWceNP2ARXNwAYwqHDvPAoHvgk",
+  "tree_authority": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+  "tree_delegate": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+  "config": {
+    "max_depth": 10,
+    "max_buffer_size": 64,
+    "canopy_depth": 0,
+    "public": true
+  },
+  "status": "active",
+  "creation_signature": "sim_1755864066",
+  "creation_timestamp": 1755864065.5604434,
+  "current_size": 0,
+  "metadata": {
+    "name": "Test Carbon Credits",
+    "network": "devnet",
+    "creator": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz"
+  }
+}

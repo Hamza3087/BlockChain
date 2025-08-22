@@ -12,6 +12,8 @@ from rest_framework import status
 from .clients.solana_client import SolanaClient, RPCEndpoint, RPCEndpointStatus
 from .services import SolanaService, get_solana_service
 from .config import get_solana_config
+from .merkle_tree import MerkleTreeManager, MerkleTreeConfig, TreeStatus
+from .cnft_minting import CompressedNFTMinter, NFTMetadata, MintRequest, NFTMintStatus
 
 
 class SolanaClientTests(TestCase):
@@ -258,3 +260,172 @@ class ConfigTests(TestCase):
 
         self.assertEqual(config['network'], 'mainnet')
         self.assertEqual(config['max_retries'], 5)
+
+
+class MerkleTreeTests(TestCase):
+    """Test cases for Merkle tree functionality."""
+
+    def test_tree_config_creation(self):
+        """Test Merkle tree configuration creation."""
+        config = MerkleTreeConfig(
+            max_depth=10,
+            max_buffer_size=32,
+            canopy_depth=0,
+            public=True
+        )
+
+        self.assertEqual(config.max_depth, 10)
+        self.assertEqual(config.max_buffer_size, 32)
+        self.assertEqual(config.canopy_depth, 0)
+        self.assertTrue(config.public)
+        self.assertEqual(config.max_capacity, 1024)  # 2^10
+
+    def test_tree_config_validation(self):
+        """Test tree configuration validation."""
+        # Test invalid max_depth
+        with self.assertRaises(ValueError):
+            MerkleTreeConfig(max_depth=50)
+
+        # Test invalid max_buffer_size
+        with self.assertRaises(ValueError):
+            MerkleTreeConfig(max_buffer_size=5000)
+
+        # Test invalid canopy_depth
+        with self.assertRaises(ValueError):
+            MerkleTreeConfig(max_depth=10, canopy_depth=15)
+
+    def test_estimated_cost_calculation(self):
+        """Test estimated cost calculation."""
+        config = MerkleTreeConfig(max_depth=14, max_buffer_size=64, canopy_depth=0)
+        cost = config.estimated_cost_lamports
+
+        self.assertGreater(cost, 0)
+        self.assertIsInstance(cost, int)
+
+
+class NFTMetadataTests(TestCase):
+    """Test cases for NFT metadata functionality."""
+
+    def test_basic_metadata_creation(self):
+        """Test basic NFT metadata creation."""
+        metadata = NFTMetadata(
+            name="Test NFT",
+            symbol="TEST",
+            description="A test NFT",
+            image="https://example.com/test.jpg"
+        )
+
+        self.assertEqual(metadata.name, "Test NFT")
+        self.assertEqual(metadata.symbol, "TEST")
+        self.assertEqual(metadata.description, "A test NFT")
+        self.assertEqual(metadata.image, "https://example.com/test.jpg")
+        self.assertEqual(len(metadata.attributes), 0)
+
+    def test_metadata_validation(self):
+        """Test metadata validation."""
+        # Test empty name
+        with self.assertRaises(ValueError):
+            NFTMetadata(name="", symbol="TEST", description="Test", image="https://example.com/test.jpg")
+
+        # Test empty symbol
+        with self.assertRaises(ValueError):
+            NFTMetadata(name="Test", symbol="", description="Test", image="https://example.com/test.jpg")
+
+        # Test empty description
+        with self.assertRaises(ValueError):
+            NFTMetadata(name="Test", symbol="TEST", description="", image="https://example.com/test.jpg")
+
+        # Test empty image
+        with self.assertRaises(ValueError):
+            NFTMetadata(name="Test", symbol="TEST", description="Test", image="")
+
+    def test_carbon_credit_metadata_creation(self):
+        """Test carbon credit specific metadata creation."""
+        metadata = NFTMetadata.create_carbon_credit_metadata(
+            tree_id="CC-001",
+            tree_species="Oak",
+            location="California, USA",
+            planting_date="2024-01-15",
+            carbon_offset_tons=2.5,
+            image_url="https://example.com/oak.jpg"
+        )
+
+        self.assertEqual(metadata.name, "Carbon Credit Tree #CC-001")
+        self.assertEqual(metadata.symbol, "CCT")
+        self.assertIn("Oak", metadata.description)
+        self.assertIn("California, USA", metadata.description)
+        self.assertEqual(len(metadata.attributes), 7)
+
+        # Check specific attributes
+        tree_id_attr = next(attr for attr in metadata.attributes if attr['trait_type'] == 'Tree ID')
+        self.assertEqual(tree_id_attr['value'], "CC-001")
+
+        carbon_attr = next(attr for attr in metadata.attributes if attr['trait_type'] == 'Carbon Offset (tons)')
+        self.assertEqual(carbon_attr['value'], 2.5)
+
+    def test_metadata_serialization(self):
+        """Test metadata JSON serialization."""
+        metadata = NFTMetadata(
+            name="Test NFT",
+            symbol="TEST",
+            description="A test NFT",
+            image="https://example.com/test.jpg"
+        )
+
+        # Test to_dict
+        data = metadata.to_dict()
+        self.assertIsInstance(data, dict)
+        self.assertEqual(data['name'], "Test NFT")
+
+        # Test to_json
+        json_str = metadata.to_json()
+        self.assertIsInstance(json_str, str)
+        self.assertIn("Test NFT", json_str)
+
+
+class MintRequestTests(TestCase):
+    """Test cases for mint request functionality."""
+
+    def test_mint_request_creation(self):
+        """Test mint request creation."""
+        metadata = NFTMetadata(
+            name="Test NFT",
+            symbol="TEST",
+            description="A test NFT",
+            image="https://example.com/test.jpg"
+        )
+
+        request = MintRequest(
+            tree_address="11111111111111111111111111111111",
+            recipient="22222222222222222222222222222222",
+            metadata=metadata
+        )
+
+        self.assertEqual(request.tree_address, "11111111111111111111111111111111")
+        self.assertEqual(request.recipient, "22222222222222222222222222222222")
+        self.assertEqual(request.metadata, metadata)
+        self.assertIsNotNone(request.mint_id)
+
+    def test_mint_request_auto_id(self):
+        """Test automatic mint ID generation."""
+        metadata = NFTMetadata(
+            name="Test NFT",
+            symbol="TEST",
+            description="A test NFT",
+            image="https://example.com/test.jpg"
+        )
+
+        request1 = MintRequest(
+            tree_address="11111111111111111111111111111111",
+            recipient="22222222222222222222222222222222",
+            metadata=metadata
+        )
+
+        request2 = MintRequest(
+            tree_address="11111111111111111111111111111111",
+            recipient="22222222222222222222222222222222",
+            metadata=metadata
+        )
+
+        # Should have different mint IDs
+        self.assertNotEqual(request1.mint_id, request2.mint_id)

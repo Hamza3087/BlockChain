@@ -1,0 +1,55 @@
+{
+  "mint_id": "8feb6f16-64a5-40f8-9568-fe2f8e7b6533",
+  "tree_address": "fGyJgYa19DsNuXMnjbWceNP2ARXNwAYwqHDvPAoHvgk",
+  "recipient": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+  "metadata": {
+    "name": "Carbon Credit Tree #CC-001",
+    "symbol": "CCT",
+    "description": "Carbon credit NFT representing a Oak tree planted in California, USA on 2024-01-15. Estimated carbon offset: 2.5 tons CO2.",
+    "image": "https://example.com/oak.jpg",
+    "external_url": null,
+    "attributes": [
+      {
+        "trait_type": "Tree ID",
+        "value": "CC-001"
+      },
+      {
+        "trait_type": "Species",
+        "value": "Oak"
+      },
+      {
+        "trait_type": "Location",
+        "value": "California, USA"
+      },
+      {
+        "trait_type": "Planting Date",
+        "value": "2024-01-15"
+      },
+      {
+        "trait_type": "Carbon Offset (tons)",
+        "value": 2.5,
+        "display_type": "number"
+      },
+      {
+        "trait_type": "Status",
+        "value": "Active"
+      },
+      {
+        "trait_type": "Verification",
+        "value": "Verified"
+      }
+    ],
+    "properties": {
+      "category": "Carbon Credit",
+      "type": "Tree NFT",
+      "version": "1.0",
+      "created_at": 1755864136
+    }
+  },
+  "status": "confirmed",
+  "signature": "mint_8feb6f16-64a5-40f8-9568-fe2f8e7b6533_1755864138",
+  "leaf_index": 0,
+  "asset_id": "asset_7d8ef2070f0a286f",
+  "error_message": null,
+  "timestamp": 1755864136.471524
+}

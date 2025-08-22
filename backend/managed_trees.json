@@ -1,0 +1,62 @@
+{
+  "fGyJgYa19DsNuXMnjbWceNP2ARXNwAYwqHDvPAoHvgk": {
+    "tree_address": "fGyJgYa19DsNuXMnjbWceNP2ARXNwAYwqHDvPAoHvgk",
+    "tree_authority": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+    "tree_delegate": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+    "config": {
+      "max_depth": 10,
+      "max_buffer_size": 64,
+      "canopy_depth": 0,
+      "public": true
+    },
+    "status": "active",
+    "creation_signature": "sim_1755864066",
+    "creation_timestamp": 1755864065.5604434,
+    "current_size": 0,
+    "metadata": {
+      "name": "Test Carbon Credits",
+      "network": "devnet",
+      "creator": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz"
+    }
+  },
+  "2jMbsheeXStvuqPyjDwWWK9ip62yoz5MFemvsPrBUsJ1": {
+    "tree_address": "2jMbsheeXStvuqPyjDwWWK9ip62yoz5MFemvsPrBUsJ1",
+    "tree_authority": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+    "tree_delegate": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+    "config": {
+      "max_depth": 12,
+      "max_buffer_size": 64,
+      "canopy_depth": 0,
+      "public": true
+    },
+    "status": "active",
+    "creation_signature": "sim_1755864201",
+    "creation_timestamp": 1755864199.916261,
+    "current_size": 0,
+    "metadata": {
+      "name": "API Test Tree",
+      "network": "devnet",
+      "creator": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz"
+    }
+  },
+  "5ymq4wQsDHKx18s4JeVKDFJXtcRvREgE1dgu7UPRiL96": {
+    "tree_address": "5ymq4wQsDHKx18s4JeVKDFJXtcRvREgE1dgu7UPRiL96",
+    "tree_authority": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+    "tree_delegate": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz",
+    "config": {
+      "max_depth": 12,
+      "max_buffer_size": 64,
+      "canopy_depth": 0,
+      "public": true
+    },
+    "status": "active",
+    "creation_signature": "sim_1755864261",
+    "creation_timestamp": 1755864259.5286512,
+    "current_size": 0,
+    "metadata": {
+      "name": "API Testtt Tree",
+      "network": "devnet",
+      "creator": "DRKnLQFxHePBq8jjEUigSzUF5QkhnVAgkydW1Cd1fJz"
+    }
+  }
+}

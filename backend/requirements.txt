@@ -17,3 +17,9 @@ anchorpy==0.20.1
 construct
 httpx==0.27.0
 tenacity==8.2.3
+
+# Metaplex and cNFT dependencies (JavaScript packages, not Python)
+# Note: @metaplex-foundation/mpl-bubblegum is installed via npm
+# Note: @metaplex-foundation/mpl-token-metadata is installed via npm
+base58==2.1.1
+borsh-construct==0.1.0
