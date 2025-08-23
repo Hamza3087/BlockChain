@@ -421,6 +421,453 @@ class SpeciesGrowthParameters(TimestampedModel):
         return biomass * float(self.carbon_conversion_factor)
 
 
+class SeiNFT(TimestampedModel):
+    """
+    Model for storing Sei blockchain NFT data before migration.
+
+    This model captures the original Sei CW721 NFT data structure
+    for migration tracking and validation purposes.
+    """
+
+    # Sei blockchain identifiers
+    sei_contract_address = models.CharField(
+        max_length=64,
+        db_index=True,
+        help_text="Sei contract address for the NFT collection"
+    )
+
+    sei_token_id = models.CharField(
+        max_length=128,
+        db_index=True,
+        help_text="Token ID on Sei blockchain"
+    )
+
+    sei_owner_address = models.CharField(
+        max_length=64,
+        help_text="Current owner address on Sei blockchain"
+    )
+
+    # NFT metadata
+    name = models.CharField(
+        max_length=200,
+        help_text="NFT name"
+    )
+
+    description = models.TextField(
+        blank=True,
+        help_text="NFT description"
+    )
+
+    image_url = models.URLField(
+        blank=True,
+        help_text="URL to NFT image"
+    )
+
+    external_url = models.URLField(
+        blank=True,
+        help_text="External URL for additional information"
+    )
+
+    # Metadata attributes (stored as JSON)
+    attributes = models.JSONField(
+        default=dict,
+        help_text="NFT attributes and traits"
+    )
+
+    # Migration status
+    MIGRATION_STATUS_CHOICES = [
+        ('pending', 'Pending Migration'),
+        ('in_progress', 'Migration In Progress'),
+        ('completed', 'Migration Completed'),
+        ('failed', 'Migration Failed'),
+        ('rolled_back', 'Migration Rolled Back'),
+    ]
+
+    migration_status = models.CharField(
+        max_length=20,
+        choices=MIGRATION_STATUS_CHOICES,
+        default='pending',
+        db_index=True,
+        help_text="Current migration status"
+    )
+
+    # Solana mapping (populated after migration)
+    solana_mint_address = models.CharField(
+        max_length=44,
+        blank=True,
+        db_index=True,
+        help_text="Solana mint address after migration"
+    )
+
+    solana_asset_id = models.CharField(
+        max_length=64,
+        blank=True,
+        db_index=True,
+        help_text="Solana compressed NFT asset ID"
+    )
+
+    # Migration tracking
+    migration_job = models.ForeignKey(
+        'MigrationJob',
+        on_delete=models.CASCADE,
+        related_name='sei_nfts',
+        null=True,
+        blank=True,
+        help_text="Associated migration job"
+    )
+
+    migration_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date when migration was completed"
+    )
+
+    # Data integrity
+    sei_data_hash = models.CharField(
+        max_length=64,
+        help_text="Hash of original Sei data for integrity verification"
+    )
+
+    validation_errors = models.JSONField(
+        default=list,
+        help_text="List of validation errors encountered"
+    )
+
+    class Meta:
+        db_table = 'blockchain_sei_nft'
+        indexes = [
+            models.Index(fields=['sei_contract_address', 'sei_token_id']),
+            models.Index(fields=['migration_status']),
+            models.Index(fields=['solana_mint_address']),
+            models.Index(fields=['migration_job']),
+            models.Index(fields=['created_at']),
+        ]
+        unique_together = [['sei_contract_address', 'sei_token_id']]
+        ordering = ['-created_at']
+        verbose_name = 'Sei NFT'
+        verbose_name_plural = 'Sei NFTs'
+
+    def __str__(self):
+        return f"{self.name} ({self.sei_contract_address}:{self.sei_token_id})"
+
+    @property
+    def is_migrated(self):
+        """Check if NFT has been successfully migrated."""
+        return self.migration_status == 'completed' and self.solana_mint_address
+
+    def get_migration_logs(self):
+        """Get migration logs for this NFT."""
+        return MigrationLog.objects.filter(
+            sei_nft=self
+        ).order_by('-created_at')
+
+
+class MigrationJob(TimestampedModel):
+    """
+    Model for tracking migration jobs and their progress.
+
+    A migration job represents a batch migration operation
+    from Sei to Solana blockchain.
+    """
+
+    job_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        help_text="Unique identifier for the migration job"
+    )
+
+    name = models.CharField(
+        max_length=200,
+        help_text="Human-readable name for the migration job"
+    )
+
+    description = models.TextField(
+        blank=True,
+        help_text="Description of the migration job"
+    )
+
+    # Job configuration
+    sei_contract_addresses = models.JSONField(
+        default=list,
+        help_text="List of Sei contract addresses to migrate"
+    )
+
+    batch_size = models.PositiveIntegerField(
+        default=100,
+        help_text="Number of NFTs to process in each batch"
+    )
+
+    # Job status
+    STATUS_CHOICES = [
+        ('created', 'Created'),
+        ('running', 'Running'),
+        ('paused', 'Paused'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='created',
+        db_index=True,
+        help_text="Current job status"
+    )
+
+    # Progress tracking
+    total_nfts = models.PositiveIntegerField(
+        default=0,
+        help_text="Total number of NFTs to migrate"
+    )
+
+    processed_nfts = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of NFTs processed"
+    )
+
+    successful_migrations = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of successful migrations"
+    )
+
+    failed_migrations = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of failed migrations"
+    )
+
+    # Timing
+    started_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When the job started"
+    )
+
+    completed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When the job completed"
+    )
+
+    # Configuration and results
+    configuration = models.JSONField(
+        default=dict,
+        help_text="Job configuration parameters"
+    )
+
+    results = models.JSONField(
+        default=dict,
+        help_text="Job execution results and statistics"
+    )
+
+    error_message = models.TextField(
+        blank=True,
+        help_text="Error message if job failed"
+    )
+
+    # User tracking
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='created_migration_jobs',
+        help_text="User who created the migration job"
+    )
+
+    class Meta:
+        db_table = 'blockchain_migration_job'
+        indexes = [
+            models.Index(fields=['status']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['started_at']),
+            models.Index(fields=['completed_at']),
+        ]
+        ordering = ['-created_at']
+        verbose_name = 'Migration Job'
+        verbose_name_plural = 'Migration Jobs'
+
+    def __str__(self):
+        return f"{self.name} ({self.status})"
+
+    @property
+    def progress_percentage(self):
+        """Calculate migration progress percentage."""
+        if self.total_nfts == 0:
+            return 0
+        return (self.processed_nfts / self.total_nfts) * 100
+
+    @property
+    def success_rate(self):
+        """Calculate success rate percentage."""
+        if self.processed_nfts == 0:
+            return 0
+        return (self.successful_migrations / self.processed_nfts) * 100
+
+    @property
+    def duration(self):
+        """Calculate job duration."""
+        if not self.started_at:
+            return None
+        end_time = self.completed_at or timezone.now()
+        return end_time - self.started_at
+
+    def get_migration_logs(self):
+        """Get all migration logs for this job."""
+        return MigrationLog.objects.filter(
+            migration_job=self
+        ).order_by('-created_at')
+
+
+class MigrationLog(TimestampedModel):
+    """
+    Model for logging migration events and operations.
+
+    This model provides comprehensive logging for migration transparency,
+    debugging, and audit purposes.
+    """
+
+    log_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        help_text="Unique identifier for the log entry"
+    )
+
+    # Related objects
+    migration_job = models.ForeignKey(
+        MigrationJob,
+        on_delete=models.CASCADE,
+        related_name='logs',
+        help_text="Associated migration job"
+    )
+
+    sei_nft = models.ForeignKey(
+        SeiNFT,
+        on_delete=models.CASCADE,
+        related_name='logs',
+        null=True,
+        blank=True,
+        help_text="Associated Sei NFT (if applicable)"
+    )
+
+    # Log details
+    LOG_LEVEL_CHOICES = [
+        ('debug', 'Debug'),
+        ('info', 'Info'),
+        ('warning', 'Warning'),
+        ('error', 'Error'),
+        ('critical', 'Critical'),
+    ]
+
+    level = models.CharField(
+        max_length=10,
+        choices=LOG_LEVEL_CHOICES,
+        default='info',
+        db_index=True,
+        help_text="Log level"
+    )
+
+    EVENT_TYPE_CHOICES = [
+        ('job_started', 'Job Started'),
+        ('job_completed', 'Job Completed'),
+        ('job_failed', 'Job Failed'),
+        ('job_cancelled', 'Job Cancelled'),
+        ('data_export', 'Data Export'),
+        ('data_mapping', 'Data Mapping'),
+        ('data_validation', 'Data Validation'),
+        ('nft_migration', 'NFT Migration'),
+        ('rollback', 'Rollback'),
+        ('error', 'Error'),
+    ]
+
+    event_type = models.CharField(
+        max_length=20,
+        choices=EVENT_TYPE_CHOICES,
+        db_index=True,
+        help_text="Type of event being logged"
+    )
+
+    message = models.TextField(
+        help_text="Log message"
+    )
+
+    # Additional data
+    details = models.JSONField(
+        default=dict,
+        help_text="Additional details and context"
+    )
+
+    # Performance metrics
+    execution_time_ms = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Execution time in milliseconds"
+    )
+
+    # Error information
+    error_code = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        help_text="Error code (if applicable)"
+    )
+
+    stack_trace = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Stack trace for errors"
+    )
+
+    class Meta:
+        db_table = 'blockchain_migration_log'
+        indexes = [
+            models.Index(fields=['migration_job', 'created_at']),
+            models.Index(fields=['sei_nft', 'created_at']),
+            models.Index(fields=['level']),
+            models.Index(fields=['event_type']),
+            models.Index(fields=['created_at']),
+        ]
+        ordering = ['-created_at']
+        verbose_name = 'Migration Log'
+        verbose_name_plural = 'Migration Logs'
+
+    def __str__(self):
+        return f"{self.event_type} - {self.level} - {self.created_at}"
+
+    @classmethod
+    def log_event(cls, migration_job, event_type, message, level='info',
+                  sei_nft=None, details=None, execution_time_ms=None,
+                  error_code=None, stack_trace=None):
+        """
+        Convenience method to create log entries.
+
+        Args:
+            migration_job: MigrationJob instance
+            event_type: Type of event
+            message: Log message
+            level: Log level (default: 'info')
+            sei_nft: Associated SeiNFT instance (optional)
+            details: Additional details dict (optional)
+            execution_time_ms: Execution time in milliseconds (optional)
+            error_code: Error code (optional)
+            stack_trace: Stack trace for errors (optional)
+
+        Returns:
+            MigrationLog instance
+        """
+        return cls.objects.create(
+            migration_job=migration_job,
+            sei_nft=sei_nft,
+            level=level,
+            event_type=event_type,
+            message=message,
+            details=details or {},
+            execution_time_ms=execution_time_ms,
+            error_code=error_code,
+            stack_trace=stack_trace
+        )
+
+
 class CarbonMarketPrice(TimestampedModel):
     """
     Model for storing carbon market prices from various sources and markets.

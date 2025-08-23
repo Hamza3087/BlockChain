@@ -111,5 +111,76 @@ def get_rpc_endpoints(network: str = None) -> List[Dict[str, Any]]:
     """Get RPC endpoints for the specified network."""
     if network is None:
         network = os.getenv('SOLANA_NETWORK', 'devnet').lower()
-    
+
     return SOLANA_RPC_ENDPOINTS.get(network, SOLANA_RPC_ENDPOINTS['devnet'])
+
+
+def get_migration_config() -> Dict[str, Any]:
+    """Get migration configuration from environment variables."""
+    return {
+        # Sei blockchain configuration
+        'sei_rpc_url': os.getenv('SEI_RPC_URL', 'https://rpc.sei-apis.com'),
+        'sei_network': os.getenv('SEI_NETWORK', 'pacific-1'),
+        'ipfs_gateway': os.getenv('IPFS_GATEWAY', 'https://ipfs.io/ipfs/'),
+
+        # Request configuration
+        'request_timeout': int(os.getenv('MIGRATION_REQUEST_TIMEOUT', '30')),
+        'connect_timeout': int(os.getenv('MIGRATION_CONNECT_TIMEOUT', '10')),
+        'batch_delay': float(os.getenv('MIGRATION_BATCH_DELAY', '0.1')),
+        'max_migration_duration_hours': int(os.getenv('MAX_MIGRATION_DURATION_HOURS', '24')),
+
+        # Mapping rules
+        'mapping_rules': {
+            'max_name_length': int(os.getenv('MIGRATION_MAX_NAME_LENGTH', '32')),
+            'max_description_length': int(os.getenv('MIGRATION_MAX_DESCRIPTION_LENGTH', '200')),
+            'max_symbol_length': int(os.getenv('MIGRATION_MAX_SYMBOL_LENGTH', '10')),
+            'default_symbol': os.getenv('MIGRATION_DEFAULT_SYMBOL', 'TREE'),
+            'image_url_transformations': {
+                'ipfs_gateway': os.getenv('IPFS_GATEWAY', 'https://ipfs.io/ipfs/'),
+                'supported_formats': ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp']
+            },
+            'attribute_mappings': {
+                'trait_type': 'trait_type',
+                'value': 'value',
+                'display_type': 'display_type'
+            },
+            'required_fields': ['name', 'image'],
+            'carbon_credit_detection': {
+                'keywords': ['carbon', 'offset', 'credit', 'tree', 'forest', 'environmental'],
+                'attribute_names': ['carbon_offset', 'co2_offset', 'environmental_impact']
+            }
+        },
+
+        # Validation rules
+        'validation_rules': {
+            'data_integrity': {
+                'hash_validation': os.getenv('MIGRATION_HASH_VALIDATION', 'true').lower() == 'true',
+                'required_fields': ['contract_address', 'token_id', 'name'],
+                'max_field_lengths': {
+                    'name': int(os.getenv('MIGRATION_MAX_NAME_LENGTH', '200')),
+                    'description': int(os.getenv('MIGRATION_MAX_DESCRIPTION_LENGTH', '1000')),
+                    'image_url': int(os.getenv('MIGRATION_MAX_IMAGE_URL_LENGTH', '500'))
+                }
+            },
+            'metadata_integrity': {
+                'validate_json_structure': os.getenv('MIGRATION_VALIDATE_JSON', 'true').lower() == 'true',
+                'validate_attributes': os.getenv('MIGRATION_VALIDATE_ATTRIBUTES', 'true').lower() == 'true',
+                'max_attributes': int(os.getenv('MIGRATION_MAX_ATTRIBUTES', '50')),
+                'required_metadata_fields': ['name']
+            },
+            'blockchain_integrity': {
+                'validate_addresses': os.getenv('MIGRATION_VALIDATE_ADDRESSES', 'true').lower() == 'true',
+                'validate_token_ids': os.getenv('MIGRATION_VALIDATE_TOKEN_IDS', 'true').lower() == 'true',
+                'check_duplicates': os.getenv('MIGRATION_CHECK_DUPLICATES', 'true').lower() == 'true'
+            },
+            'progress_tracking': {
+                'checkpoint_interval': int(os.getenv('MIGRATION_CHECKPOINT_INTERVAL', '100')),
+                'progress_report_interval': int(os.getenv('MIGRATION_PROGRESS_INTERVAL', '10'))
+            },
+            'rollback': {
+                'max_rollback_depth': int(os.getenv('MIGRATION_MAX_ROLLBACK_DEPTH', '1000')),
+                'rollback_timeout_seconds': int(os.getenv('MIGRATION_ROLLBACK_TIMEOUT', '300')),
+                'preserve_logs': os.getenv('MIGRATION_PRESERVE_LOGS', 'true').lower() == 'true'
+            }
+        }
+    }

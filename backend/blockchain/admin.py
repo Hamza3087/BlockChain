@@ -9,7 +9,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import Tree, SpeciesGrowthParameters, CarbonMarketPrice, TreeCarbonData
+from .models import (
+    Tree, SpeciesGrowthParameters, CarbonMarketPrice, TreeCarbonData,
+    SeiNFT, MigrationJob, MigrationLog
+)
 
 
 @admin.register(Tree)
@@ -298,3 +301,193 @@ class TreeCarbonDataAdmin(admin.ModelAdmin):
 
 # Add the inline to TreeAdmin
 TreeAdmin.inlines = [TreeCarbonDataInline]
+
+
+# Day 5 Admin - Migration Models
+
+@admin.register(SeiNFT)
+class SeiNFTAdmin(admin.ModelAdmin):
+    """Admin interface for SeiNFT model."""
+
+    list_display = [
+        'name', 'sei_contract_address', 'sei_token_id', 'migration_status',
+        'solana_mint_address', 'migration_date', 'created_at'
+    ]
+
+    list_filter = [
+        'migration_status', 'migration_date', 'created_at', 'updated_at'
+    ]
+
+    search_fields = [
+        'name', 'sei_contract_address', 'sei_token_id', 'sei_owner_address',
+        'solana_mint_address', 'solana_asset_id'
+    ]
+
+    readonly_fields = ['created_at', 'updated_at', 'sei_data_hash']
+
+    fieldsets = (
+        ('Sei Blockchain Information', {
+            'fields': (
+                'sei_contract_address', 'sei_token_id', 'sei_owner_address',
+                'sei_data_hash'
+            )
+        }),
+        ('NFT Metadata', {
+            'fields': (
+                'name', 'description', 'image_url', 'external_url', 'attributes'
+            )
+        }),
+        ('Migration Status', {
+            'fields': (
+                'migration_status', 'migration_job', 'migration_date',
+                'validation_errors'
+            )
+        }),
+        ('Solana Mapping', {
+            'fields': (
+                'solana_mint_address', 'solana_asset_id'
+            )
+        }),
+        ('Timestamps', {
+            'fields': (
+                'created_at', 'updated_at'
+            ),
+            'classes': ('collapse',)
+        })
+    )
+
+    def get_queryset(self, request):
+        """Optimize queryset with select_related."""
+        return super().get_queryset(request).select_related('migration_job')
+
+
+@admin.register(MigrationJob)
+class MigrationJobAdmin(admin.ModelAdmin):
+    """Admin interface for MigrationJob model."""
+
+    list_display = [
+        'name', 'status', 'total_nfts', 'processed_nfts', 'successful_migrations',
+        'failed_migrations', 'progress_percentage', 'created_by', 'created_at'
+    ]
+
+    list_filter = [
+        'status', 'created_at', 'started_at', 'completed_at'
+    ]
+
+    search_fields = [
+        'name', 'description', 'created_by__username'
+    ]
+
+    readonly_fields = [
+        'job_id', 'created_at', 'updated_at', 'progress_percentage',
+        'success_rate', 'duration'
+    ]
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': (
+                'job_id', 'name', 'description', 'created_by'
+            )
+        }),
+        ('Configuration', {
+            'fields': (
+                'sei_contract_addresses', 'batch_size', 'configuration'
+            )
+        }),
+        ('Status & Progress', {
+            'fields': (
+                'status', 'total_nfts', 'processed_nfts', 'successful_migrations',
+                'failed_migrations', 'progress_percentage', 'success_rate'
+            )
+        }),
+        ('Timing', {
+            'fields': (
+                'started_at', 'completed_at', 'duration'
+            )
+        }),
+        ('Results & Errors', {
+            'fields': (
+                'results', 'error_message'
+            ),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': (
+                'created_at', 'updated_at'
+            ),
+            'classes': ('collapse',)
+        })
+    )
+
+    def get_queryset(self, request):
+        """Optimize queryset with select_related."""
+        return super().get_queryset(request).select_related('created_by')
+
+
+class MigrationLogInline(admin.TabularInline):
+    """Inline admin for MigrationLog within MigrationJob admin."""
+
+    model = MigrationLog
+    extra = 0
+    readonly_fields = ['log_id', 'created_at', 'execution_time_ms']
+    fields = [
+        'level', 'event_type', 'message', 'execution_time_ms', 'created_at'
+    ]
+    ordering = ['-created_at']
+
+
+@admin.register(MigrationLog)
+class MigrationLogAdmin(admin.ModelAdmin):
+    """Admin interface for MigrationLog model."""
+
+    list_display = [
+        'event_type', 'level', 'message', 'migration_job', 'sei_nft',
+        'execution_time_ms', 'created_at'
+    ]
+
+    list_filter = [
+        'level', 'event_type', 'created_at'
+    ]
+
+    search_fields = [
+        'message', 'migration_job__name', 'sei_nft__name', 'error_code'
+    ]
+
+    readonly_fields = ['log_id', 'created_at', 'updated_at']
+
+    date_hierarchy = 'created_at'
+
+    fieldsets = (
+        ('Log Information', {
+            'fields': (
+                'log_id', 'migration_job', 'sei_nft', 'level', 'event_type'
+            )
+        }),
+        ('Message & Details', {
+            'fields': (
+                'message', 'details', 'execution_time_ms'
+            )
+        }),
+        ('Error Information', {
+            'fields': (
+                'error_code', 'stack_trace'
+            ),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': (
+                'created_at', 'updated_at'
+            ),
+            'classes': ('collapse',)
+        })
+    )
+
+    def get_queryset(self, request):
+        """Optimize queryset with select_related."""
+        return super().get_queryset(request).select_related(
+            'migration_job', 'sei_nft'
+        )
+
+
+# Add the inline to MigrationJobAdmin
+MigrationJobAdmin.inlines = [MigrationLogInline]

@@ -17,7 +17,8 @@ import structlog
 from .services import get_solana_service
 from .merkle_tree import MerkleTreeManager, MerkleTreeConfig
 from .cnft_minting import CompressedNFTMinter, NFTMetadata, MintRequest
-from .models import Tree, SpeciesGrowthParameters, CarbonMarketPrice, TreeCarbonData
+from .models import Tree, SpeciesGrowthParameters, CarbonMarketPrice, TreeCarbonData, SeiNFT, MigrationJob, MigrationLog
+from .migration import MigrationService
 
 logger = structlog.get_logger(__name__)
 
@@ -588,5 +589,140 @@ def carbon_market_prices(request):
         logger.error("Failed to retrieve carbon market prices", error=str(e))
         return Response(
             {"status": "error", "message": f"Failed to retrieve prices: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+# Day 5 API Endpoints - Sei to Solana Migration
+
+@api_view(['POST'])
+def create_migration_job(request):
+    """
+    API endpoint to create a new migration job.
+
+    POST data:
+    - name: Job name
+    - description: Job description
+    - sei_contract_addresses: List of Sei contract addresses
+    - batch_size: Batch size (optional, default: 100)
+    - configuration: Additional configuration (optional)
+    """
+    try:
+        data = json.loads(request.body) if request.body else {}
+
+        # Validate required fields
+        required_fields = ['name', 'description', 'sei_contract_addresses']
+        missing_fields = [field for field in required_fields if not data.get(field)]
+        if missing_fields:
+            return Response(
+                {"status": "error", "message": f"Missing required fields: {', '.join(missing_fields)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get or create user (in production, use authenticated user)
+        from django.contrib.auth.models import User
+        user, created = User.objects.get_or_create(
+            username='api_user',
+            defaults={'email': 'api@replantworld.com'}
+        )
+
+        # Create migration job
+        migration_job = MigrationJob.objects.create(
+            name=data['name'],
+            description=data['description'],
+            sei_contract_addresses=data['sei_contract_addresses'],
+            batch_size=data.get('batch_size', 100),
+            configuration=data.get('configuration', {}),
+            created_by=user
+        )
+
+        logger.info(
+            "Migration job created via API",
+            job_id=str(migration_job.job_id),
+            name=migration_job.name,
+            contracts=len(migration_job.sei_contract_addresses)
+        )
+
+        return Response({
+            'job_id': str(migration_job.job_id),
+            'name': migration_job.name,
+            'status': migration_job.status,
+            'sei_contract_addresses': migration_job.sei_contract_addresses,
+            'batch_size': migration_job.batch_size,
+            'created_at': migration_job.created_at.isoformat()
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        logger.error("Failed to create migration job", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to create migration job: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def list_migration_jobs(request):
+    """
+    API endpoint to list migration jobs.
+
+    Query parameters:
+    - status: Filter by job status
+    - limit: Number of results (default: 50)
+    - offset: Offset for pagination (default: 0)
+    """
+    try:
+        # Get query parameters
+        job_status = request.GET.get('status')
+        limit = int(request.GET.get('limit', 50))
+        offset = int(request.GET.get('offset', 0))
+
+        # Build queryset
+        queryset = MigrationJob.objects.select_related('created_by').all()
+
+        if job_status:
+            queryset = queryset.filter(status=job_status)
+
+        # Apply pagination
+        total_count = queryset.count()
+        jobs = queryset[offset:offset + limit]
+
+        # Serialize job data
+        jobs_data = []
+        for job in jobs:
+            job_data = {
+                'job_id': str(job.job_id),
+                'name': job.name,
+                'description': job.description,
+                'status': job.status,
+                'sei_contract_addresses': job.sei_contract_addresses,
+                'batch_size': job.batch_size,
+                'total_nfts': job.total_nfts,
+                'processed_nfts': job.processed_nfts,
+                'successful_migrations': job.successful_migrations,
+                'failed_migrations': job.failed_migrations,
+                'progress_percentage': job.progress_percentage,
+                'success_rate': job.success_rate,
+                'created_by': job.created_by.username,
+                'created_at': job.created_at.isoformat(),
+                'started_at': job.started_at.isoformat() if job.started_at else None,
+                'completed_at': job.completed_at.isoformat() if job.completed_at else None,
+                'duration': str(job.duration) if job.duration else None
+            }
+            jobs_data.append(job_data)
+
+        return Response({
+            'jobs': jobs_data,
+            'pagination': {
+                'total_count': total_count,
+                'limit': limit,
+                'offset': offset,
+                'has_next': offset + limit < total_count
+            }
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to list migration jobs", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to list migration jobs: {str(e)}"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

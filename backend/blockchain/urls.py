@@ -24,4 +24,8 @@ urlpatterns = [
     # Day 4 endpoints - Database Models
     path('trees/', views.trees_list, name='trees_list'),
     path('carbon-prices/', views.carbon_market_prices, name='carbon_market_prices'),
+
+    # Day 5 endpoints - Sei to Solana Migration
+    path('migration/jobs/', views.create_migration_job, name='create_migration_job'),
+    path('migration/jobs/list/', views.list_migration_jobs, name='list_migration_jobs'),
 ]
