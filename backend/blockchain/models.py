@@ -868,6 +868,421 @@ class MigrationLog(TimestampedModel):
         )
 
 
+# Day 6 - Integration & System Testing Models
+
+class IntegrationTestResult(TimestampedModel):
+    """
+    Model for storing integration test results.
+
+    Tracks comprehensive test execution data including performance
+    metrics, success rates, and detailed results.
+    """
+
+    test_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        help_text="Unique identifier for the test execution"
+    )
+
+    SCENARIO_CHOICES = [
+        ('single_nft_migration', 'Single NFT Migration'),
+        ('batch_migration', 'Batch Migration'),
+        ('large_scale_migration', 'Large Scale Migration'),
+        ('cache_performance', 'Cache Performance'),
+        ('error_handling', 'Error Handling'),
+        ('rollback_testing', 'Rollback Testing'),
+        ('performance_benchmark', 'Performance Benchmark'),
+    ]
+
+    scenario = models.CharField(
+        max_length=30,
+        choices=SCENARIO_CHOICES,
+        help_text="Test scenario type"
+    )
+
+    STATUS_CHOICES = [
+        ('passed', 'Passed'),
+        ('failed', 'Failed'),
+        ('error', 'Error'),
+        ('running', 'Running'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='running',
+        help_text="Test execution status"
+    )
+
+    # Test configuration
+    test_data_size = models.PositiveIntegerField(
+        help_text="Size of test data used"
+    )
+
+    enable_caching = models.BooleanField(
+        default=True,
+        help_text="Whether caching was enabled during test"
+    )
+
+    enable_monitoring = models.BooleanField(
+        default=True,
+        help_text="Whether monitoring was enabled during test"
+    )
+
+    timeout_seconds = models.PositiveIntegerField(
+        default=300,
+        help_text="Test timeout in seconds"
+    )
+
+    # Test results
+    start_time = models.DateTimeField(
+        help_text="Test start time"
+    )
+
+    end_time = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Test end time"
+    )
+
+    duration_seconds = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Test duration in seconds"
+    )
+
+    success_rate = models.FloatField(
+        default=0.0,
+        help_text="Test success rate percentage"
+    )
+
+    total_nfts_processed = models.PositiveIntegerField(
+        default=0,
+        help_text="Total NFTs processed during test"
+    )
+
+    successful_nfts = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of successfully processed NFTs"
+    )
+
+    failed_nfts = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of failed NFT processing attempts"
+    )
+
+    # Detailed results and metrics
+    pipeline_results = models.JSONField(
+        default=list,
+        help_text="Detailed pipeline execution results"
+    )
+
+    performance_metrics = models.JSONField(
+        default=dict,
+        help_text="Performance metrics collected during test"
+    )
+
+    error_message = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Error message if test failed"
+    )
+
+    warnings = models.JSONField(
+        default=list,
+        help_text="List of warnings encountered during test"
+    )
+
+    # Test environment
+    executed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="User who executed the test"
+    )
+
+    environment = models.CharField(
+        max_length=50,
+        default='development',
+        help_text="Environment where test was executed"
+    )
+
+    class Meta:
+        db_table = 'blockchain_integration_test_result'
+        indexes = [
+            models.Index(fields=['scenario', 'status']),
+            models.Index(fields=['start_time']),
+            models.Index(fields=['success_rate']),
+            models.Index(fields=['created_at']),
+        ]
+        ordering = ['-start_time']
+        verbose_name = 'Integration Test Result'
+        verbose_name_plural = 'Integration Test Results'
+
+    def __str__(self):
+        return f"{self.scenario} - {self.status} ({self.start_time})"
+
+    @property
+    def is_completed(self):
+        """Check if test is completed."""
+        return self.status in ['passed', 'failed', 'error', 'cancelled']
+
+    @property
+    def passed(self):
+        """Check if test passed."""
+        return self.status == 'passed'
+
+
+class BatchMigrationStatus(TimestampedModel):
+    """
+    Model for tracking batch migration status and progress.
+
+    Provides detailed tracking of batch processing operations
+    with real-time progress updates.
+    """
+
+    batch_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        help_text="Unique identifier for the batch"
+    )
+
+    migration_job = models.ForeignKey(
+        MigrationJob,
+        on_delete=models.CASCADE,
+        related_name='batch_statuses',
+        help_text="Associated migration job"
+    )
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+        ('retrying', 'Retrying'),
+    ]
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='pending',
+        help_text="Batch processing status"
+    )
+
+    # Batch configuration
+    batch_size = models.PositiveIntegerField(
+        help_text="Number of items in this batch"
+    )
+
+    batch_index = models.PositiveIntegerField(
+        help_text="Index of this batch in the overall job"
+    )
+
+    # Progress tracking
+    total_items = models.PositiveIntegerField(
+        help_text="Total items to process in this batch"
+    )
+
+    processed_items = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of items processed"
+    )
+
+    successful_items = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of successfully processed items"
+    )
+
+    failed_items = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of failed items"
+    )
+
+    skipped_items = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of skipped items"
+    )
+
+    # Timing
+    start_time = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Batch processing start time"
+    )
+
+    end_time = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Batch processing end time"
+    )
+
+    estimated_completion = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Estimated completion time"
+    )
+
+    # Status and error tracking
+    current_operation = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Current operation being performed"
+    )
+
+    error_message = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Error message if batch failed"
+    )
+
+    retry_count = models.PositiveIntegerField(
+        default=0,
+        help_text="Number of retry attempts"
+    )
+
+    # Performance metrics
+    processing_rate_per_second = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Items processed per second"
+    )
+
+    memory_usage_mb = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="Peak memory usage in MB"
+    )
+
+    class Meta:
+        db_table = 'blockchain_batch_migration_status'
+        indexes = [
+            models.Index(fields=['migration_job', 'batch_index']),
+            models.Index(fields=['status']),
+            models.Index(fields=['start_time']),
+            models.Index(fields=['created_at']),
+        ]
+        ordering = ['batch_index']
+        verbose_name = 'Batch Migration Status'
+        verbose_name_plural = 'Batch Migration Statuses'
+
+    def __str__(self):
+        return f"Batch {self.batch_index} - {self.status} ({self.processed_items}/{self.total_items})"
+
+    @property
+    def progress_percentage(self):
+        """Calculate progress percentage."""
+        if self.total_items == 0:
+            return 0.0
+        return (self.processed_items / self.total_items) * 100
+
+    @property
+    def success_rate(self):
+        """Calculate success rate."""
+        if self.processed_items == 0:
+            return 0.0
+        return (self.successful_items / self.processed_items) * 100
+
+    @property
+    def duration(self):
+        """Calculate processing duration."""
+        if self.start_time and self.end_time:
+            return self.end_time - self.start_time
+        elif self.start_time:
+            return timezone.now() - self.start_time
+        return None
+
+
+class PerformanceMetric(TimestampedModel):
+    """
+    Model for storing performance metrics.
+
+    Captures detailed performance data for monitoring
+    and optimization purposes.
+    """
+
+    metric_id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        help_text="Unique identifier for the metric"
+    )
+
+    # Metric identification
+    name = models.CharField(
+        max_length=100,
+        help_text="Metric name"
+    )
+
+    category = models.CharField(
+        max_length=50,
+        default='general',
+        help_text="Metric category"
+    )
+
+    # Metric data
+    value = models.FloatField(
+        help_text="Metric value"
+    )
+
+    unit = models.CharField(
+        max_length=20,
+        default='count',
+        help_text="Metric unit"
+    )
+
+    # Context
+    context = models.JSONField(
+        default=dict,
+        help_text="Additional context and tags"
+    )
+
+    # Associated objects
+    integration_test = models.ForeignKey(
+        IntegrationTestResult,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='metrics',
+        help_text="Associated integration test"
+    )
+
+    batch_migration = models.ForeignKey(
+        BatchMigrationStatus,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='metrics',
+        help_text="Associated batch migration"
+    )
+
+    # Timing
+    timestamp = models.DateTimeField(
+        default=timezone.now,
+        help_text="When the metric was recorded"
+    )
+
+    class Meta:
+        db_table = 'blockchain_performance_metric'
+        indexes = [
+            models.Index(fields=['name', 'category']),
+            models.Index(fields=['timestamp']),
+            models.Index(fields=['integration_test']),
+            models.Index(fields=['batch_migration']),
+            models.Index(fields=['created_at']),
+        ]
+        ordering = ['-timestamp']
+        verbose_name = 'Performance Metric'
+        verbose_name_plural = 'Performance Metrics'
+
+    def __str__(self):
+        return f"{self.name}: {self.value} {self.unit} ({self.timestamp})"
+
+
 class CarbonMarketPrice(TimestampedModel):
     """
     Model for storing carbon market prices from various sources and markets.

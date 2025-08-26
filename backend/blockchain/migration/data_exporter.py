@@ -3,6 +3,8 @@ Sei Data Exporter for NFT Migration
 
 This module provides functionality to export NFT data from Sei blockchain
 using the CW721 standard for migration to Solana compressed NFTs.
+
+Production implementation that fetches data directly from Sei blockchain.
 """
 
 import asyncio
@@ -12,14 +14,19 @@ import time
 from dataclasses import dataclass, asdict
 from typing import List, Dict, Any, Optional, AsyncGenerator
 from decimal import Decimal
-import aiohttp
 import structlog
 from django.conf import settings
 from django.utils import timezone
 
 from ..config import get_migration_config
+from ..clients.sei_client import SeiClient, SeiNFTInfo, SeiContractError, SeiNetworkError
 
 logger = structlog.get_logger(__name__)
+
+
+class DataExportError(Exception):
+    """Exception raised for data export errors."""
+    pass
 
 
 @dataclass
@@ -61,11 +68,11 @@ class SeiNFTData:
         if self.export_timestamp is None:
             self.export_timestamp = time.time()
         if self.data_hash is None:
-            self.data_hash = self.calculate_hash()
+            self.data_hash = self._calculate_hash()
     
-    def calculate_hash(self) -> str:
+    def _calculate_hash(self) -> str:
         """Calculate SHA-256 hash of the NFT data for integrity verification."""
-        # Create a consistent representation for hashing
+        # Create a deterministic representation for hashing
         hash_data = {
             'contract_address': self.contract_address,
             'token_id': self.token_id,
@@ -75,7 +82,6 @@ class SeiNFTData:
             'image_url': self.image_url,
             'external_url': self.external_url,
             'attributes': sorted(self.attributes, key=lambda x: str(x)) if self.attributes else [],
-            'metadata': dict(sorted(self.metadata.items())) if self.metadata else {}
         }
         
         # Convert to JSON string and hash
@@ -90,436 +96,314 @@ class SeiNFTData:
     def from_dict(cls, data: Dict[str, Any]) -> 'SeiNFTData':
         """Create instance from dictionary."""
         return cls(**data)
+    
+    @classmethod
+    def from_sei_nft_info(cls, sei_nft: SeiNFTInfo) -> 'SeiNFTData':
+        """Create instance from SeiNFTInfo."""
+        return cls(
+            contract_address=sei_nft.contract_address,
+            token_id=sei_nft.token_id,
+            owner_address=sei_nft.owner,
+            name=sei_nft.name,
+            description=sei_nft.description,
+            image_url=sei_nft.image,
+            external_url=sei_nft.external_url,
+            attributes=sei_nft.attributes or [],
+            metadata=sei_nft.raw_metadata or {}
+        )
+    
+    def validate(self) -> List[str]:
+        """
+        Validate the NFT data structure.
+        
+        Returns:
+            List of validation errors (empty if valid)
+        """
+        errors = []
+        
+        # Required fields
+        if not self.contract_address:
+            errors.append("contract_address is required")
+        if not self.token_id:
+            errors.append("token_id is required")
+        if not self.name:
+            errors.append("name is required")
+        
+        # Field length validation
+        if len(self.name) > 200:
+            errors.append("name exceeds maximum length of 200 characters")
+        if len(self.description) > 1000:
+            errors.append("description exceeds maximum length of 1000 characters")
+        if len(self.image_url) > 500:
+            errors.append("image_url exceeds maximum length of 500 characters")
+        
+        # Attributes validation
+        if self.attributes and len(self.attributes) > 50:
+            errors.append("attributes exceed maximum count of 50")
+        
+        return errors
+
+    def calculate_hash(self) -> str:
+        """Calculate hash for data integrity verification."""
+        return self.data_hash
 
 
 class DataExporter:
     """
-    Sei blockchain data exporter for CW721 NFTs.
+    Sei blockchain data exporter for NFT migration.
     
-    This class handles the extraction of NFT data from Sei blockchain
-    contracts following the CW721 standard.
+    This class handles the export of NFT data from Sei CW721 contracts
+    for migration to Solana compressed NFTs using direct blockchain queries.
     """
-    
-    def __init__(self, config: Dict[str, Any] = None):
+
+    def __init__(self, config: Dict[str, Any] = None, sei_client: SeiClient = None):
         """
         Initialize the data exporter.
-        
+
         Args:
             config: Configuration dictionary (optional, uses default if not provided)
+            sei_client: Pre-configured Sei client (optional, creates new if not provided)
         """
         self.config = config or get_migration_config()
-        self.session: Optional[aiohttp.ClientSession] = None
         self.logger = logger.bind(component="DataExporter")
         
-        # Performance tracking
+        # Initialize Sei client
+        self.sei_client = sei_client or SeiClient()
+        
+        # Export statistics
         self.export_stats = {
             'total_exported': 0,
             'successful_exports': 0,
             'failed_exports': 0,
-            'start_time': None,
-            'end_time': None
+            'contracts_processed': 0,
+            'start_time': None
         }
-    
-    async def __aenter__(self):
-        """Async context manager entry."""
-        await self.initialize()
-        return self
-    
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Async context manager exit."""
-        await self.close()
-    
-    async def initialize(self):
-        """Initialize the HTTP session and connections."""
-        if self.session is None:
-            timeout = aiohttp.ClientTimeout(
-                total=self.config.get('request_timeout', 30),
-                connect=self.config.get('connect_timeout', 10)
-            )
+
+        self.logger.info(
+            "DataExporter initialized",
+            config_keys=list(self.config.keys()),
+            sei_rpc_url=self.sei_client.rpc_url,
+            sei_chain_id=self.sei_client.chain_id
+        )
+
+    async def initialize(self) -> bool:
+        """Initialize the data exporter and establish connections."""
+        try:
+            self.export_stats['start_time'] = time.time()
             
-            self.session = aiohttp.ClientSession(
-                timeout=timeout,
-                headers={
-                    'User-Agent': 'ReplantWorld-Migration/1.0',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            )
+            # Initialize Sei client
+            if not await self.sei_client.initialize():
+                raise DataExportError("Failed to initialize Sei client")
             
-            self.logger.info(
-                "DataExporter initialized",
-                sei_rpc_url=self.config.get('sei_rpc_url'),
-                timeout=self.config.get('request_timeout')
-            )
-    
+            self.logger.info("DataExporter successfully initialized")
+            return True
+            
+        except Exception as e:
+            self.logger.error("Failed to initialize DataExporter", error=str(e))
+            return False
+
     async def close(self):
-        """Close HTTP session and cleanup resources."""
-        if self.session:
-            await self.session.close()
-            self.session = None
-            
+        """Close connections and cleanup resources."""
+        if self.sei_client:
+            await self.sei_client.close()
+        
         self.logger.info(
             "DataExporter closed",
-            stats=self.export_stats
+            stats=self.get_export_stats()
         )
-    
+
     async def export_nft_data(self, contract_address: str, token_id: str) -> Optional[SeiNFTData]:
         """
         Export single NFT data from Sei blockchain.
-        
+
         Args:
             contract_address: Sei contract address
             token_id: Token ID to export
-            
+
         Returns:
             SeiNFTData instance or None if export fails
         """
         start_time = time.time()
+        self.export_stats['total_exported'] += 1
         
         try:
-            self.logger.info(
-                "Exporting NFT data",
-                contract_address=contract_address,
-                token_id=token_id
-            )
+            # Get NFT info from Sei blockchain
+            sei_nft = await self.sei_client.get_nft_info(contract_address, token_id)
             
-            # Query NFT info from contract
-            nft_info = await self._query_nft_info(contract_address, token_id)
-            if not nft_info:
-                self.logger.error(
-                    "Failed to query NFT info",
-                    contract_address=contract_address,
-                    token_id=token_id
+            # Convert to SeiNFTData
+            nft_data = SeiNFTData.from_sei_nft_info(sei_nft)
+            
+            # Validate the data
+            validation_errors = nft_data.validate()
+            if validation_errors:
+                self.logger.warning(
+                    "NFT data validation warnings",
+                    contract=contract_address,
+                    token_id=token_id,
+                    errors=validation_errors
                 )
-                self.export_stats['failed_exports'] += 1
-                return None
-            
-            # Query owner info
-            owner_info = await self._query_owner_of(contract_address, token_id)
-            if not owner_info:
-                self.logger.error(
-                    "Failed to query NFT owner",
-                    contract_address=contract_address,
-                    token_id=token_id
-                )
-                self.export_stats['failed_exports'] += 1
-                return None
-            
-            # Extract metadata
-            metadata = await self._extract_metadata(nft_info)
-            
-            # Create SeiNFTData instance
-            nft_data = SeiNFTData(
-                contract_address=contract_address,
-                token_id=token_id,
-                owner_address=owner_info.get('owner', ''),
-                name=metadata.get('name', ''),
-                description=metadata.get('description', ''),
-                image_url=metadata.get('image', ''),
-                external_url=metadata.get('external_url', ''),
-                attributes=metadata.get('attributes', []),
-                metadata=metadata
-            )
-            
-            execution_time = (time.time() - start_time) * 1000
-            
-            self.logger.info(
-                "NFT data exported successfully",
-                contract_address=contract_address,
-                token_id=token_id,
-                execution_time_ms=execution_time,
-                data_hash=nft_data.data_hash
-            )
             
             self.export_stats['successful_exports'] += 1
+            
+            export_time = time.time() - start_time
+            self.logger.info(
+                "NFT data exported successfully",
+                contract=contract_address,
+                token_id=token_id,
+                name=nft_data.name,
+                export_time=f"{export_time:.3f}s"
+            )
+            
             return nft_data
             
-        except Exception as e:
-            execution_time = (time.time() - start_time) * 1000
-            
+        except (SeiContractError, SeiNetworkError) as e:
+            self.export_stats['failed_exports'] += 1
             self.logger.error(
                 "Failed to export NFT data",
-                contract_address=contract_address,
+                contract=contract_address,
                 token_id=token_id,
-                error=str(e),
-                execution_time_ms=execution_time
-            )
-            
-            self.export_stats['failed_exports'] += 1
-            return None
-        
-        finally:
-            self.export_stats['total_exported'] += 1
-    
-    async def export_collection_data(
-        self, 
-        contract_address: str, 
-        start_token_id: int = 1,
-        max_tokens: Optional[int] = None,
-        batch_size: int = 10
-    ) -> AsyncGenerator[SeiNFTData, None]:
-        """
-        Export NFT data for an entire collection.
-        
-        Args:
-            contract_address: Sei contract address
-            start_token_id: Starting token ID (default: 1)
-            max_tokens: Maximum number of tokens to export (optional)
-            batch_size: Number of concurrent requests (default: 10)
-            
-        Yields:
-            SeiNFTData instances for each successfully exported NFT
-        """
-        self.export_stats['start_time'] = time.time()
-        
-        self.logger.info(
-            "Starting collection export",
-            contract_address=contract_address,
-            start_token_id=start_token_id,
-            max_tokens=max_tokens,
-            batch_size=batch_size
-        )
-        
-        try:
-            # Get collection info to determine total supply
-            collection_info = await self._query_collection_info(contract_address)
-            total_supply = collection_info.get('num_tokens', max_tokens or 10000)
-            
-            if max_tokens:
-                total_supply = min(total_supply, max_tokens)
-            
-            self.logger.info(
-                "Collection info retrieved",
-                contract_address=contract_address,
-                total_supply=total_supply
-            )
-            
-            # Process tokens in batches
-            current_token_id = start_token_id
-            
-            while current_token_id <= total_supply:
-                # Create batch of token IDs
-                batch_end = min(current_token_id + batch_size - 1, total_supply)
-                token_ids = list(range(current_token_id, batch_end + 1))
-                
-                self.logger.debug(
-                    "Processing batch",
-                    contract_address=contract_address,
-                    token_ids=token_ids
-                )
-                
-                # Process batch concurrently
-                tasks = [
-                    self.export_nft_data(contract_address, str(token_id))
-                    for token_id in token_ids
-                ]
-                
-                results = await asyncio.gather(*tasks, return_exceptions=True)
-                
-                # Yield successful results
-                for result in results:
-                    if isinstance(result, SeiNFTData):
-                        yield result
-                    elif isinstance(result, Exception):
-                        self.logger.error(
-                            "Batch export error",
-                            contract_address=contract_address,
-                            error=str(result)
-                        )
-                
-                current_token_id = batch_end + 1
-                
-                # Rate limiting
-                if batch_size > 1:
-                    await asyncio.sleep(self.config.get('batch_delay', 0.1))
-        
-        finally:
-            self.export_stats['end_time'] = time.time()
-            
-            self.logger.info(
-                "Collection export completed",
-                contract_address=contract_address,
-                stats=self.export_stats
-            )
-
-    async def _query_nft_info(self, contract_address: str, token_id: str) -> Optional[Dict[str, Any]]:
-        """Query NFT info from Sei contract."""
-        query = {
-            "nft_info": {
-                "token_id": token_id
-            }
-        }
-
-        return await self._query_contract(contract_address, query)
-
-    async def _query_owner_of(self, contract_address: str, token_id: str) -> Optional[Dict[str, Any]]:
-        """Query NFT owner from Sei contract."""
-        query = {
-            "owner_of": {
-                "token_id": token_id
-            }
-        }
-
-        return await self._query_contract(contract_address, query)
-
-    async def _query_collection_info(self, contract_address: str) -> Optional[Dict[str, Any]]:
-        """Query collection info from Sei contract."""
-        query = {
-            "contract_info": {}
-        }
-
-        result = await self._query_contract(contract_address, query)
-        if not result:
-            # Fallback to num_tokens query
-            query = {"num_tokens": {}}
-            result = await self._query_contract(contract_address, query)
-
-        return result or {}
-
-    async def _query_contract(self, contract_address: str, query: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Execute smart contract query on Sei blockchain."""
-        if not self.session:
-            await self.initialize()
-
-        try:
-            # Prepare RPC request
-            rpc_request = {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "abci_query",
-                "params": {
-                    "path": f"/cosmwasm.wasm.v1.Query/SmartContractState",
-                    "data": self._encode_query(contract_address, query),
-                    "prove": False
-                }
-            }
-
-            # Make request to Sei RPC
-            async with self.session.post(
-                self.config['sei_rpc_url'],
-                json=rpc_request
-            ) as response:
-                if response.status != 200:
-                    self.logger.error(
-                        "RPC request failed",
-                        status=response.status,
-                        contract_address=contract_address,
-                        query=query
-                    )
-                    return None
-
-                result = await response.json()
-
-                if 'error' in result:
-                    self.logger.error(
-                        "RPC error",
-                        error=result['error'],
-                        contract_address=contract_address,
-                        query=query
-                    )
-                    return None
-
-                # Decode response
-                return self._decode_response(result.get('result', {}).get('response', {}))
-
-        except Exception as e:
-            self.logger.error(
-                "Contract query failed",
-                error=str(e),
-                contract_address=contract_address,
-                query=query
-            )
-            return None
-
-    def _encode_query(self, contract_address: str, query: Dict[str, Any]) -> str:
-        """Encode contract query for Sei RPC."""
-        import base64
-
-        # Create the query message
-        query_msg = {
-            "contract_addr": contract_address,
-            "msg": base64.b64encode(json.dumps(query).encode()).decode()
-        }
-
-        # Encode as base64
-        return base64.b64encode(json.dumps(query_msg).encode()).decode()
-
-    def _decode_response(self, response: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Decode Sei RPC response."""
-        import base64
-
-        try:
-            if 'value' in response:
-                decoded_data = base64.b64decode(response['value']).decode()
-                return json.loads(decoded_data)
-            return None
-        except Exception as e:
-            self.logger.error("Failed to decode response", error=str(e))
-            return None
-
-    async def _extract_metadata(self, nft_info: Dict[str, Any]) -> Dict[str, Any]:
-        """Extract and normalize metadata from NFT info."""
-        metadata = {}
-
-        # Extract basic info
-        if 'token_uri' in nft_info:
-            # Fetch metadata from URI
-            metadata = await self._fetch_metadata_from_uri(nft_info['token_uri'])
-
-        # Merge with extension data
-        if 'extension' in nft_info:
-            extension = nft_info['extension']
-            metadata.update({
-                'name': extension.get('name', ''),
-                'description': extension.get('description', ''),
-                'image': extension.get('image', ''),
-                'external_url': extension.get('external_url', ''),
-                'attributes': extension.get('attributes', [])
-            })
-
-        return metadata
-
-    async def _fetch_metadata_from_uri(self, uri: str) -> Dict[str, Any]:
-        """Fetch metadata from URI (IPFS, HTTP, etc.)."""
-        if not uri:
-            return {}
-
-        try:
-            # Handle IPFS URIs
-            if uri.startswith('ipfs://'):
-                uri = uri.replace('ipfs://', self.config.get('ipfs_gateway', 'https://ipfs.io/ipfs/'))
-
-            # Fetch metadata
-            async with self.session.get(uri) as response:
-                if response.status == 200:
-                    return await response.json()
-                else:
-                    self.logger.warning(
-                        "Failed to fetch metadata from URI",
-                        uri=uri,
-                        status=response.status
-                    )
-                    return {}
-
-        except Exception as e:
-            self.logger.error(
-                "Error fetching metadata from URI",
-                uri=uri,
                 error=str(e)
             )
-            return {}
+            return None
+        except Exception as e:
+            self.export_stats['failed_exports'] += 1
+            self.logger.error(
+                "Unexpected error during NFT export",
+                contract=contract_address,
+                token_id=token_id,
+                error=str(e)
+            )
+            return None
 
-    def get_export_statistics(self) -> Dict[str, Any]:
+    async def export_nft_batch(self, contract_address: str, token_ids: List[str]) -> List[SeiNFTData]:
+        """
+        Export multiple NFTs in batch.
+
+        Args:
+            contract_address: Sei contract address
+            token_ids: List of token IDs to export
+
+        Returns:
+            List of successfully exported SeiNFTData instances
+        """
+        start_time = time.time()
+
+        try:
+            # Get NFT batch from Sei blockchain
+            sei_nfts = await self.sei_client.get_nft_batch(contract_address, token_ids)
+
+            # Convert to SeiNFTData
+            nft_data_list = []
+            for sei_nft in sei_nfts:
+                try:
+                    nft_data = SeiNFTData.from_sei_nft_info(sei_nft)
+                    nft_data_list.append(nft_data)
+                except Exception as e:
+                    self.logger.error(
+                        "Failed to convert NFT data",
+                        contract=contract_address,
+                        token_id=sei_nft.token_id,
+                        error=str(e)
+                    )
+
+            batch_time = time.time() - start_time
+            self.logger.info(
+                "NFT batch exported",
+                contract=contract_address,
+                requested=len(token_ids),
+                successful=len(nft_data_list),
+                batch_time=f"{batch_time:.3f}s"
+            )
+
+            return nft_data_list
+
+        except Exception as e:
+            self.logger.error(
+                "Failed to export NFT batch",
+                contract=contract_address,
+                token_count=len(token_ids),
+                error=str(e)
+            )
+            return []
+
+    async def export_all_nfts(self, contract_address: str, page_size: int = 100) -> AsyncGenerator[SeiNFTData, None]:
+        """
+        Export all NFTs from a contract with pagination.
+
+        Args:
+            contract_address: Sei contract address
+            page_size: Number of NFTs to process per page
+
+        Yields:
+            SeiNFTData instances
+        """
+        self.export_stats['contracts_processed'] += 1
+
+        try:
+            async for sei_nft in self.sei_client.get_all_nfts_paginated(contract_address, page_size):
+                try:
+                    nft_data = SeiNFTData.from_sei_nft_info(sei_nft)
+                    self.export_stats['successful_exports'] += 1
+                    yield nft_data
+                except Exception as e:
+                    self.export_stats['failed_exports'] += 1
+                    self.logger.error(
+                        "Failed to convert NFT data",
+                        contract=contract_address,
+                        token_id=sei_nft.token_id,
+                        error=str(e)
+                    )
+
+        except Exception as e:
+            self.logger.error(
+                "Failed to export all NFTs",
+                contract=contract_address,
+                error=str(e)
+            )
+
+    async def get_contract_info(self, contract_address: str) -> Optional[Dict[str, Any]]:
+        """
+        Get contract information.
+
+        Args:
+            contract_address: Sei contract address
+
+        Returns:
+            Contract information dictionary or None if failed
+        """
+        try:
+            contract_info = await self.sei_client.get_contract_info(contract_address)
+
+            return {
+                'address': contract_info.address,
+                'name': contract_info.name,
+                'symbol': contract_info.symbol,
+                'total_supply': contract_info.total_supply,
+                'minter': contract_info.minter
+            }
+
+        except Exception as e:
+            self.logger.error(
+                "Failed to get contract info",
+                contract=contract_address,
+                error=str(e)
+            )
+            return None
+
+    def get_export_stats(self) -> Dict[str, Any]:
         """Get export statistics."""
-        stats = self.export_stats.copy()
+        runtime = 0
+        if self.export_stats['start_time']:
+            runtime = time.time() - self.export_stats['start_time']
 
-        if stats['start_time'] and stats['end_time']:
-            stats['duration_seconds'] = stats['end_time'] - stats['start_time']
-
-            if stats['duration_seconds'] > 0:
-                stats['exports_per_second'] = stats['total_exported'] / stats['duration_seconds']
-
-        if stats['total_exported'] > 0:
-            stats['success_rate'] = (stats['successful_exports'] / stats['total_exported']) * 100
-
-        return stats
+        return {
+            'total_exported': self.export_stats['total_exported'],
+            'successful_exports': self.export_stats['successful_exports'],
+            'failed_exports': self.export_stats['failed_exports'],
+            'contracts_processed': self.export_stats['contracts_processed'],
+            'success_rate': (
+                self.export_stats['successful_exports'] / max(self.export_stats['total_exported'], 1) * 100
+            ),
+            'runtime_seconds': runtime,
+            'exports_per_second': self.export_stats['successful_exports'] / max(runtime, 1)
+        }

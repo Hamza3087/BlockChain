@@ -139,7 +139,73 @@ class MigrationMapper:
                 'attribute_names': ['carbon_offset', 'co2_offset', 'environmental_impact']
             }
         })
-    
+
+    async def map_sei_to_solana(self, sei_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Convert raw Sei NFT data to Solana compressed NFT format.
+
+        Args:
+            sei_data: Raw NFT data from Sei blockchain
+
+        Returns:
+            Mapped data ready for Solana compressed NFT minting
+        """
+        try:
+            # Convert raw data to SeiNFTData if needed
+            if isinstance(sei_data, dict):
+                from .data_exporter import SeiNFTData
+                sei_nft_data = SeiNFTData(
+                    contract_address=sei_data.get('contract_address', ''),
+                    token_id=sei_data.get('token_id', ''),
+                    owner_address=sei_data.get('owner', ''),
+                    name=sei_data.get('metadata', {}).get('name', ''),
+                    description=sei_data.get('metadata', {}).get('description', ''),
+                    image_url=sei_data.get('metadata', {}).get('image', ''),
+                    external_url=sei_data.get('metadata', {}).get('external_url', ''),
+                    attributes=sei_data.get('metadata', {}).get('attributes', []),
+                    metadata=sei_data.get('metadata', {})
+                )
+            else:
+                sei_nft_data = sei_data
+
+            # Use existing mapping method
+            mapping_result = await self.map_nft_data(sei_nft_data)
+
+            # Convert to the expected format
+            metadata_dict = {}
+            if mapping_result.solana_metadata:
+                if hasattr(mapping_result.solana_metadata, 'to_dict'):
+                    metadata_dict = mapping_result.solana_metadata.to_dict()
+                else:
+                    # If it's already a dict or has dict-like attributes
+                    metadata_dict = {
+                        'name': getattr(mapping_result.solana_metadata, 'name', ''),
+                        'symbol': getattr(mapping_result.solana_metadata, 'symbol', ''),
+                        'description': getattr(mapping_result.solana_metadata, 'description', ''),
+                        'image': getattr(mapping_result.solana_metadata, 'image', ''),
+                        'external_url': getattr(mapping_result.solana_metadata, 'external_url', ''),
+                        'attributes': getattr(mapping_result.solana_metadata, 'attributes', [])
+                    }
+
+            return {
+                'token_id': sei_nft_data.token_id,
+                'owner': sei_nft_data.owner_address,
+                'metadata': metadata_dict,
+                'original_sei_data': {
+                    'contract_address': sei_nft_data.contract_address,
+                    'token_uri': sei_data.get('token_uri', ''),
+                    'migration_timestamp': mapping_result.mapping_timestamp
+                }
+            }
+
+        except Exception as e:
+            self.logger.error(
+                "Failed to map Sei to Solana format",
+                token_id=sei_data.get('token_id'),
+                error=str(e)
+            )
+            raise
+
     async def map_nft_data(self, sei_nft_data: SeiNFTData) -> MigrationMapping:
         """
         Map Sei NFT data to Solana compressed NFT format.
@@ -519,13 +585,27 @@ class MigrationMapper:
             if not getattr(mapping.solana_metadata, field, None):
                 mapping.add_validation_error(f"Required field '{field}' is missing or empty")
 
-        # Validate name length
+        # Validate name length (should not happen since we truncate during mapping)
         if len(mapping.solana_metadata.name) > self.mapping_rules['max_name_length']:
-            mapping.add_validation_error(f"Name exceeds maximum length of {self.mapping_rules['max_name_length']}")
+            # This should not happen since we truncate during mapping, but fix it just in case
+            original_name = mapping.solana_metadata.name
+            mapping.solana_metadata.name = mapping.solana_metadata.name[:self.mapping_rules['max_name_length']].strip()
+            mapping.add_transformation(
+                'name', original_name, mapping.solana_metadata.name,
+                f'Emergency truncation during validation to {self.mapping_rules["max_name_length"]} characters'
+            )
+            mapping.add_warning(f"Name was emergency truncated during validation from {len(original_name)} to {len(mapping.solana_metadata.name)} characters")
 
-        # Validate symbol length
+        # Validate symbol length (should not happen since we set default symbol)
         if len(mapping.solana_metadata.symbol) > self.mapping_rules['max_symbol_length']:
-            mapping.add_validation_error(f"Symbol exceeds maximum length of {self.mapping_rules['max_symbol_length']}")
+            # This should not happen since we use default symbol, but fix it just in case
+            original_symbol = mapping.solana_metadata.symbol
+            mapping.solana_metadata.symbol = mapping.solana_metadata.symbol[:self.mapping_rules['max_symbol_length']].strip()
+            mapping.add_transformation(
+                'symbol', original_symbol, mapping.solana_metadata.symbol,
+                f'Emergency truncation during validation to {self.mapping_rules["max_symbol_length"]} characters'
+            )
+            mapping.add_warning(f"Symbol was emergency truncated during validation from {len(original_symbol)} to {len(mapping.solana_metadata.symbol)} characters")
 
     def get_mapping_statistics(self) -> Dict[str, Any]:
         """Get mapping statistics."""

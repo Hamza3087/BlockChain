@@ -11,14 +11,39 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
+from django.utils import timezone
 from asgiref.sync import sync_to_async
 import structlog
 
-from .services import get_solana_service
+from .clients.solana_client import SolanaClient
+
+# Temporary compatibility function
+async def get_solana_service():
+    """Compatibility function to replace the old service."""
+    default_endpoints = [
+        {
+            'url': 'https://api.devnet.solana.com',
+            'name': 'devnet-primary',
+            'priority': 1,
+            'timeout': 30
+        }
+    ]
+    client = SolanaClient(rpc_endpoints=default_endpoints)
+    await client.connect()
+    return client
 from .merkle_tree import MerkleTreeManager, MerkleTreeConfig
 from .cnft_minting import CompressedNFTMinter, NFTMetadata, MintRequest
-from .models import Tree, SpeciesGrowthParameters, CarbonMarketPrice, TreeCarbonData, SeiNFT, MigrationJob, MigrationLog
+from .models import (
+    Tree, SpeciesGrowthParameters, CarbonMarketPrice, TreeCarbonData,
+    SeiNFT, MigrationJob, MigrationLog, IntegrationTestResult,
+    BatchMigrationStatus, PerformanceMetric
+)
 from .migration import MigrationService
+from .integration import (
+    EndToEndPipeline, BatchMigrationManager, CacheManager,
+    IntegrationTestRunner, PerformanceMonitor
+)
+from .integration.test_runner import TestConfiguration, TestScenario
 
 logger = structlog.get_logger(__name__)
 
@@ -724,5 +749,365 @@ def list_migration_jobs(request):
         logger.error("Failed to list migration jobs", error=str(e))
         return Response(
             {"status": "error", "message": f"Failed to list migration jobs: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+# Day 6 API Endpoints - Integration & System Testing
+
+@api_view(['POST'])
+def run_end_to_end_pipeline(request):
+    """
+    API endpoint to run end-to-end pipeline.
+
+    POST data:
+    - sei_contract_addresses: List of Sei contract addresses
+    - max_nfts_per_contract: Maximum NFTs per contract (optional)
+    - enable_caching: Enable caching (optional, default: true)
+    - enable_monitoring: Enable monitoring (optional, default: true)
+    """
+    try:
+        data = json.loads(request.body) if request.body else {}
+
+        # Validate required fields
+        if not data.get('sei_contract_addresses'):
+            return Response(
+                {"status": "error", "message": "sei_contract_addresses is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        async def run_pipeline():
+            pipeline = EndToEndPipeline(
+                enable_caching=data.get('enable_caching', True),
+                enable_monitoring=data.get('enable_monitoring', True)
+            )
+
+            initialized = await pipeline.initialize()
+            if not initialized:
+                return {"status": "error", "message": "Failed to initialize pipeline"}
+
+            try:
+                result = await pipeline.execute_full_pipeline(
+                    sei_contract_addresses=data['sei_contract_addresses'],
+                    max_nfts_per_contract=data.get('max_nfts_per_contract')
+                )
+
+                return {
+                    "status": "success",
+                    "pipeline_id": result.pipeline_id,
+                    "pipeline_status": result.status.value,
+                    "total_nfts": result.total_nfts,
+                    "processed_nfts": result.processed_nfts,
+                    "successful_nfts": result.successful_nfts,
+                    "failed_nfts": result.failed_nfts,
+                    "success_rate": result.success_rate,
+                    "duration": result.duration,
+                    "stage_results": result.stage_results,
+                    "performance_metrics": result.performance_metrics
+                }
+
+            finally:
+                await pipeline.close()
+
+        # Run the async pipeline
+        result = asyncio.run(run_pipeline())
+
+        if result.get("status") == "error":
+            return Response(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        logger.info(
+            "End-to-end pipeline executed via API",
+            pipeline_id=result.get("pipeline_id"),
+            success_rate=result.get("success_rate")
+        )
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to run end-to-end pipeline", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to run pipeline: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['POST'])
+def run_batch_migration(request):
+    """
+    API endpoint to run batch migration.
+
+    POST data:
+    - migration_job_id: Migration job ID to process in batches
+    """
+    try:
+        data = json.loads(request.body) if request.body else {}
+
+        if not data.get('migration_job_id'):
+            return Response(
+                {"status": "error", "message": "migration_job_id is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get migration job
+        try:
+            migration_job = MigrationJob.objects.get(job_id=data['migration_job_id'])
+        except MigrationJob.DoesNotExist:
+            return Response(
+                {"status": "error", "message": "Migration job not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        async def run_batch():
+            batch_manager = BatchMigrationManager()
+
+            progress = await batch_manager.process_migration_job_in_batches(migration_job)
+
+            return {
+                "status": "success",
+                "batch_id": progress.batch_id,
+                "batch_status": progress.status.value,
+                "total_items": progress.total_items,
+                "processed_items": progress.processed_items,
+                "successful_items": progress.successful_items,
+                "failed_items": progress.failed_items,
+                "progress_percentage": progress.progress_percentage,
+                "success_rate": progress.success_rate,
+                "duration": str(progress.duration) if progress.duration else None,
+                "start_time": progress.start_time.isoformat(),
+                "end_time": progress.end_time.isoformat() if progress.end_time else None
+            }
+
+        # Run the async batch migration
+        result = asyncio.run(run_batch())
+
+        logger.info(
+            "Batch migration executed via API",
+            batch_id=result.get("batch_id"),
+            success_rate=result.get("success_rate")
+        )
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to run batch migration", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to run batch migration: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def get_cache_stats(request):
+    """
+    API endpoint to get Redis cache statistics.
+    """
+    try:
+        from .integration.cache_manager import cache_manager
+
+        stats = cache_manager.get_stats()
+
+        return Response({
+            "status": "success",
+            "cache_stats": stats,
+            "timestamp": timezone.now().isoformat()
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to get cache stats", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to get cache stats: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['POST'])
+def run_integration_test(request):
+    """
+    API endpoint to run integration tests.
+
+    POST data:
+    - scenario: Test scenario (single_nft_migration, batch_migration, etc.)
+    - test_data_size: Size of test data (optional, default: 10)
+    - enable_caching: Enable caching (optional, default: true)
+    - enable_monitoring: Enable monitoring (optional, default: true)
+    """
+    try:
+        data = json.loads(request.body) if request.body else {}
+
+        scenario_name = data.get('scenario', 'single_nft_migration')
+
+        # Validate scenario
+        try:
+            scenario = TestScenario(scenario_name)
+        except ValueError:
+            return Response(
+                {"status": "error", "message": f"Invalid scenario: {scenario_name}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        async def run_test():
+            test_runner = IntegrationTestRunner()
+            await test_runner.initialize()
+
+            try:
+                test_config = TestConfiguration(
+                    scenario=scenario,
+                    test_data_size=data.get('test_data_size', 10),
+                    enable_caching=data.get('enable_caching', True),
+                    enable_monitoring=data.get('enable_monitoring', True),
+                    timeout_seconds=data.get('timeout_seconds', 300)
+                )
+
+                test_result = await test_runner.run_test_scenario(test_config)
+
+                return {
+                    "status": "success",
+                    "test_id": test_result.test_id,
+                    "scenario": test_result.scenario.value,
+                    "test_status": test_result.status,
+                    "duration_seconds": test_result.duration_seconds,
+                    "success_rate": test_result.success_rate,
+                    "test_data_size": test_result.test_data_size,
+                    "performance_metrics": test_result.performance_metrics,
+                    "warnings": test_result.warnings,
+                    "error_message": test_result.error_message
+                }
+
+            finally:
+                await test_runner.close()
+
+        # Run the async test
+        result = asyncio.run(run_test())
+
+        logger.info(
+            "Integration test executed via API",
+            test_id=result.get("test_id"),
+            scenario=result.get("scenario"),
+            test_status=result.get("test_status")
+        )
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to run integration test", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to run integration test: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def get_performance_metrics(request):
+    """
+    API endpoint to get performance metrics.
+
+    Query parameters:
+    - category: Metric category (optional)
+    - limit: Number of results (default: 100)
+    """
+    try:
+        category = request.GET.get('category')
+        limit = int(request.GET.get('limit', 100))
+
+        async def get_metrics():
+            monitor = PerformanceMonitor()
+            await monitor.initialize()
+
+            try:
+                if category:
+                    metrics = await monitor.get_metrics(category=category, limit=limit)
+                else:
+                    metrics = await monitor.get_metrics(limit=limit)
+
+                # Get performance summary
+                summary = await monitor.get_performance_summary()
+
+                return {
+                    "status": "success",
+                    "metrics": metrics,
+                    "summary": summary,
+                    "timestamp": timezone.now().isoformat()
+                }
+
+            finally:
+                await monitor.close()
+
+        # Run the async function
+        result = asyncio.run(get_metrics())
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to get performance metrics", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to get performance metrics: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def list_integration_test_results(request):
+    """
+    API endpoint to list integration test results.
+
+    Query parameters:
+    - scenario: Filter by test scenario
+    - status: Filter by test status
+    - limit: Number of results (default: 50)
+    - offset: Offset for pagination (default: 0)
+    """
+    try:
+        scenario = request.GET.get('scenario')
+        test_status = request.GET.get('status')
+        limit = int(request.GET.get('limit', 50))
+        offset = int(request.GET.get('offset', 0))
+
+        # Build queryset
+        queryset = IntegrationTestResult.objects.select_related('executed_by').all()
+
+        if scenario:
+            queryset = queryset.filter(scenario=scenario)
+        if test_status:
+            queryset = queryset.filter(status=test_status)
+
+        # Apply pagination
+        total_count = queryset.count()
+        test_results = queryset[offset:offset + limit]
+
+        # Serialize data
+        results_data = []
+        for test_result in test_results:
+            result_data = {
+                'test_id': str(test_result.test_id),
+                'scenario': test_result.scenario,
+                'status': test_result.status,
+                'test_data_size': test_result.test_data_size,
+                'duration_seconds': test_result.duration_seconds,
+                'success_rate': test_result.success_rate,
+                'total_nfts_processed': test_result.total_nfts_processed,
+                'successful_nfts': test_result.successful_nfts,
+                'failed_nfts': test_result.failed_nfts,
+                'executed_by': test_result.executed_by.username if test_result.executed_by else None,
+                'environment': test_result.environment,
+                'start_time': test_result.start_time.isoformat(),
+                'end_time': test_result.end_time.isoformat() if test_result.end_time else None,
+                'created_at': test_result.created_at.isoformat()
+            }
+            results_data.append(result_data)
+
+        return Response({
+            'test_results': results_data,
+            'pagination': {
+                'total_count': total_count,
+                'limit': limit,
+                'offset': offset,
+                'has_next': offset + limit < total_count
+            }
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error("Failed to list integration test results", error=str(e))
+        return Response(
+            {"status": "error", "message": f"Failed to list integration test results: {str(e)}"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

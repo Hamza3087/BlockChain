@@ -1,0 +1,97 @@
+{
+  "tree_creation": {
+    "status": "success",
+    "tree_address": "EbqniV3ULzbT31RpWR2Jd4LmX2MQZwZVUuiDmFxL11Da",
+    "max_depth": 14,
+    "max_buffer_size": 64,
+    "max_nfts": 16384,
+    "transaction_signature": "tree_creation_EbqniV3ULzbT31RpWR2Jd4LmX2MQZwZV",
+    "timestamp": "2025-08-26T21:40:13.017799"
+  },
+  "mint_result": {
+    "status": "success",
+    "mint_address": "FxjiRLQzE5Dka713U4BL2fhcYUue3xkQVGzWMHcag2o8",
+    "tree_address": "EbqniV3ULzbT31RpWR2Jd4LmX2MQZwZVUuiDmFxL11Da",
+    "transaction_signature": "63ESm2kcfZu41aVcnwkeW9Sb4h3yUNDab5NrKspw8J8C9sNisLu9ByTRJYQJLin86Lq4En9NYoWQGJBNBVeqxcp1",
+    "recipient": "FxjiRLQzE5Dka713U4BL2fhcYUue3xkQVGzWMHcag2o8",
+    "metadata": {
+      "name": "Test Tree NFT",
+      "symbol": "TREE",
+      "description": "A test tree NFT migrated from Sei to Solana using Metaplex Bubblegum",
+      "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+      "external_url": "https://replantworld.io",
+      "attributes": [
+        {
+          "trait_type": "Botanical Name",
+          "value": "Quercus robur"
+        },
+        {
+          "trait_type": "Country",
+          "value": "Poland"
+        },
+        {
+          "trait_type": "Latitude",
+          "value": "50.272521"
+        },
+        {
+          "trait_type": "Longitude",
+          "value": "19.639508"
+        },
+        {
+          "trait_type": "Planter",
+          "value": "Test Planter"
+        },
+        {
+          "trait_type": "Date Planted",
+          "value": "2024-08-26"
+        },
+        {
+          "trait_type": "Migration Source",
+          "value": "Sei Blockchain"
+        }
+      ]
+    },
+    "metadata_uri": "https://ipfs.io/ipfs/Qm00f30273e0d4f7e0b3fdbbd04baf4b88d91b4b18a4b7",
+    "timestamp": "2025-08-26T21:40:13.023449",
+    "network": "devnet",
+    "type": "compressed_nft",
+    "program_id": "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY"
+  },
+  "test_metadata": {
+    "name": "Test Tree NFT",
+    "symbol": "TREE",
+    "description": "A test tree NFT migrated from Sei to Solana using Metaplex Bubblegum",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "https://replantworld.io",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Quercus robur"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Poland"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "50.272521"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "19.639508"
+      },
+      {
+        "trait_type": "Planter",
+        "value": "Test Planter"
+      },
+      {
+        "trait_type": "Date Planted",
+        "value": "2024-08-26"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      }
+    ]
+  }
+}

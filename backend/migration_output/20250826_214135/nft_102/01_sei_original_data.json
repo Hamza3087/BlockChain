@@ -1,0 +1,72 @@
+{
+  "token_id": "102",
+  "token_uri": "https://ipfs.filebase.io/ipfs/QmXUFW1BhTifofLug7MRwj4FmyMcXPYJ64RL5bZY35tCjP",
+  "extension": null,
+  "owner": "sei1j36p2jn5635wvk0vvqh46htj3njrehjdr7ag3z",
+  "approvals": [],
+  "metadata": {
+    "edition": 1,
+    "symbol": "RPLNT",
+    "collection": "Replant World",
+    "name": "Baobab",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Salix alba"
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "NEAR_THREATENED"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Kiribati"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.279364"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.871154"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$10.00"
+      }
+    ]
+  },
+  "attr_botanical_name": "Salix alba",
+  "attr_iucn_status": "NEAR_THREATENED",
+  "attr_country": "Kiribati",
+  "attr_longitude": "18.279364",
+  "attr_latitude": "7.871154",
+  "attr_is_native": "No",
+  "attr_org_community": "Green World",
+  "attr_planter": "kasia-antos",
+  "attr_date_planted": "2024-12-03",
+  "attr_sponsor": "Alicja compass2",
+  "attr_planting_cost": "$10.00"
+}

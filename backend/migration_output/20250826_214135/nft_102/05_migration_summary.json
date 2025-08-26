@@ -1,0 +1,12 @@
+{
+  "token_id": "102",
+  "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+  "solana_mint": "GgMJGU24opXkbnwMjTyXQ9QgWZsb8c2uiGvwhYdHAwDK",
+  "tree_address": "BFiZSyTvWKDsRQdR77ReHDEaaqbvXrHrAinuncrt55nH",
+  "processing_time": "2025-08-26T21:42:24.667203",
+  "status": "completed",
+  "database_records": {
+    "sei_nft_id": 111,
+    "tree_id": null
+  }
+}

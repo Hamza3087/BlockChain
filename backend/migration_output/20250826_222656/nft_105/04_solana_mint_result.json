@@ -1,0 +1,90 @@
+{
+  "status": "success",
+  "mint_address": "TEEZUwJ5nLHE5UqDqsWWqyfEX2nYFPPUHBvbnYwJBUx",
+  "tree_address": "EJM5wjukgHEK1zb4Birg2sZ3vpa6rMYf3dUg2WYJFTV2",
+  "transaction_signature": "CqD4Qb1zZSHxVhhC1aRUj2Rq5TpoERkGPgaViB4jLGxo",
+  "recipient": "sei1j36p2jn5635wvk0vvqh46htj3njrehjdr7ag3z",
+  "metadata": {
+    "name": "Zamioculcas",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Zamioculcas zamiifolia"
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "DATA_DEFICIENT"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Mayotte"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.280987"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.875587"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Replant World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "SumarniLaman"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$3.00"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "105"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "metadata_uri": "https://ipfs.io/ipfs/Qm59375714d5a2d5740a65f98b2992d8ca44961db49c25",
+  "timestamp": "2025-08-26T22:27:35.705224",
+  "network": "devnet",
+  "type": "real_compressed_nft_structure",
+  "program_id": "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY",
+  "payer": "Dg7Jt7byLckwN1ZN273ok5R15r8WEFuu2f27pyYjDzA2",
+  "max_depth": 14,
+  "max_nfts": 16384
+}

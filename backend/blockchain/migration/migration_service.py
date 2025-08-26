@@ -21,7 +21,7 @@ from .data_exporter import DataExporter, SeiNFTData
 from .migration_mapper import MigrationMapper, MigrationMapping
 from .migration_validator import MigrationValidator, ValidationResult, MigrationStatus
 from ..models import SeiNFT, MigrationJob, MigrationLog, Tree
-from ..services import get_solana_service
+from ..clients.solana_client import SolanaClient
 from ..merkle_tree import MerkleTreeManager
 from ..cnft_minting import CompressedNFTMinter, MintRequest
 from ..config import get_migration_config
@@ -56,7 +56,7 @@ class MigrationService:
         self.data_exporter = None
         self.migration_mapper = None
         self.migration_validator = None
-        self.solana_service = None
+        self.solana_client = None
         self.merkle_tree_manager = None
         self.cnft_minter = None
         
@@ -83,8 +83,17 @@ class MigrationService:
             self.migration_validator = MigrationValidator(self.config)
             
             # Initialize Solana components
-            self.solana_service = await get_solana_service()
-            self.merkle_tree_manager = MerkleTreeManager(self.solana_service.client)
+            default_endpoints = [
+                {
+                    'url': 'https://api.devnet.solana.com',
+                    'name': 'devnet-primary',
+                    'priority': 1,
+                    'timeout': 30
+                }
+            ]
+            self.solana_client = SolanaClient(rpc_endpoints=default_endpoints)
+            await self.solana_client.connect()
+            self.merkle_tree_manager = MerkleTreeManager(self.solana_client)
             self.cnft_minter = CompressedNFTMinter(self.merkle_tree_manager)
             
             # Load existing trees
@@ -107,8 +116,8 @@ class MigrationService:
         if self.data_exporter:
             await self.data_exporter.close()
         
-        if self.solana_service:
-            await self.solana_service.close()
+        if self.solana_client:
+            await self.solana_client.close()
         
         self.logger.info("Migration service closed", stats=self.service_stats)
     

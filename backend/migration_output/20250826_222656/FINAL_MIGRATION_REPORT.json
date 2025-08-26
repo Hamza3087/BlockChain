@@ -1,0 +1,48 @@
+{
+  "migration_job_id": "unknown",
+  "total_processed": 3,
+  "successful": 3,
+  "failed": 0,
+  "success_rate": 100.0,
+  "processing_time": "2025-08-26T22:27:36.995031",
+  "output_directory": "migration_output/20250826_222656",
+  "successful_nfts": [
+    {
+      "token_id": "103",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": "7jiv86jox9HxvCX4ivaRi5V3V96U4bw9NSZiXUfW15d4",
+      "tree_address": "A49xHCaAdEy6mr8bzqFZqDYikeCoYAmGS7jewZ8XaBxW",
+      "processing_time": "2025-08-26T22:27:35.172826",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 113,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "105",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": "TEEZUwJ5nLHE5UqDqsWWqyfEX2nYFPPUHBvbnYwJBUx",
+      "tree_address": "EJM5wjukgHEK1zb4Birg2sZ3vpa6rMYf3dUg2WYJFTV2",
+      "processing_time": "2025-08-26T22:27:35.869706",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 114,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "100",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": "9cekzAs3bWoKwVBik5T2TRTx6uagYyo2J7xLxm4k8EC6",
+      "tree_address": "BwEWo8U4RmxfNfKKFDac8cxMPrV6mbaDK5ttQ3Y1k9zr",
+      "processing_time": "2025-08-26T22:27:36.492735",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 115,
+        "tree_id": null
+      }
+    }
+  ],
+  "failed_nfts": []
+}

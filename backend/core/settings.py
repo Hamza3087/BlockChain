@@ -69,6 +69,9 @@ MIDDLEWARE = [
     'common.middleware.GlobalExceptionMiddleware',
 ]
 
+# System User Configuration
+SYSTEM_USER_USERNAME = os.getenv("SYSTEM_USER_USERNAME", "system")
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -236,3 +239,70 @@ SOLANA_RETRY_DELAY = float(os.getenv('SOLANA_RETRY_DELAY', '1.0'))
 SOLANA_HEALTH_CHECK_INTERVAL = int(os.getenv('SOLANA_HEALTH_CHECK_INTERVAL', '60'))
 SOLANA_TIMEOUT = int(os.getenv('SOLANA_TIMEOUT', '30'))
 SOLANA_KEYPAIR_PATH = os.getenv('SOLANA_KEYPAIR_PATH', '~/.config/solana/id.json')
+
+# Sei Blockchain Configuration
+SEI_CHAIN_ID = os.getenv('SEI_CHAIN_ID', 'atlantic-2')
+SEI_RPC_URL = os.getenv('SEI_RPC_URL', 'https://rest.atlantic-2.seinetwork.io')
+SEI_ADMIN_MNEMONIC = os.getenv('SEI_ADMIN_MNEMONIC', '')
+SEI_NFT_ADDRESS = os.getenv('SEI_NFT_ADDRESS', '')
+SEI_NFT_MULTI_CODE_ID = int(os.getenv('SEI_NFT_MULTI_CODE_ID', '5649'))
+SEI_MAX_RETRIES = int(os.getenv('SEI_MAX_RETRIES', '3'))
+SEI_RETRY_DELAY = float(os.getenv('SEI_RETRY_DELAY', '1.0'))
+SEI_TIMEOUT = int(os.getenv('SEI_TIMEOUT', '30'))
+SEI_BATCH_SIZE = int(os.getenv('SEI_BATCH_SIZE', '100'))
+
+# Day 6 - Integration & System Testing Configuration
+INTEGRATION_TESTING = {
+    'enabled': os.getenv('INTEGRATION_TESTING_ENABLED', 'true').lower() == 'true',
+    'batch_size': int(os.getenv('INTEGRATION_BATCH_SIZE', '10')),
+    'max_concurrent_jobs': int(os.getenv('INTEGRATION_MAX_CONCURRENT_JOBS', '3')),
+    'test_data_retention_days': int(os.getenv('INTEGRATION_TEST_DATA_RETENTION_DAYS', '7')),
+    'performance_monitoring': os.getenv('INTEGRATION_PERFORMANCE_MONITORING', 'true').lower() == 'true',
+}
+
+# Batch Migration Configuration
+BATCH_MIGRATION = {
+    'default_batch_size': int(os.getenv('BATCH_MIGRATION_DEFAULT_SIZE', '50')),
+    'max_batch_size': int(os.getenv('BATCH_MIGRATION_MAX_SIZE', '500')),
+    'concurrent_batches': int(os.getenv('BATCH_MIGRATION_CONCURRENT_BATCHES', '5')),
+    'retry_attempts': int(os.getenv('BATCH_MIGRATION_RETRY_ATTEMPTS', '3')),
+    'retry_delay_seconds': int(os.getenv('BATCH_MIGRATION_RETRY_DELAY', '30')),
+    'progress_update_interval': int(os.getenv('BATCH_MIGRATION_PROGRESS_INTERVAL', '10')),
+}
+
+# Redis Caching Configuration
+REDIS_CACHE_CONFIG = {
+    'default_timeout': int(os.getenv('REDIS_DEFAULT_TIMEOUT', '300')),  # 5 minutes
+    'nft_data_timeout': int(os.getenv('REDIS_NFT_DATA_TIMEOUT', '1800')),  # 30 minutes
+    'migration_job_timeout': int(os.getenv('REDIS_MIGRATION_JOB_TIMEOUT', '3600')),  # 1 hour
+    'solana_data_timeout': int(os.getenv('REDIS_SOLANA_DATA_TIMEOUT', '600')),  # 10 minutes
+    'key_prefix': os.getenv('REDIS_KEY_PREFIX', 'replantworld'),
+    'version': int(os.getenv('REDIS_CACHE_VERSION', '1')),
+}
+
+# Performance Monitoring Configuration
+PERFORMANCE_MONITORING = {
+    'enabled': os.getenv('PERFORMANCE_MONITORING_ENABLED', 'true').lower() == 'true',
+    'slow_query_threshold_ms': int(os.getenv('PERFORMANCE_SLOW_QUERY_THRESHOLD', '1000')),
+    'memory_usage_threshold_mb': int(os.getenv('PERFORMANCE_MEMORY_THRESHOLD', '512')),
+    'metrics_retention_days': int(os.getenv('PERFORMANCE_METRICS_RETENTION_DAYS', '30')),
+}
+
+# Testing Configuration
+TESTING = {
+    'use_test_database': os.getenv('USE_TEST_DATABASE', 'false').lower() == 'true',
+    'test_data_fixtures': os.getenv('TEST_DATA_FIXTURES', 'blockchain/fixtures/test_data.json'),
+    'mock_external_apis': os.getenv('MOCK_EXTERNAL_APIS', 'true').lower() == 'true',
+    'test_timeout_seconds': int(os.getenv('TEST_TIMEOUT_SECONDS', '300')),
+}
+
+# Celery Configuration (for async task processing)
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', REDIS_URL)
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', REDIS_URL)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = int(os.getenv('CELERY_TASK_TIME_LIMIT', '1800'))  # 30 minutes
+CELERY_WORKER_PREFETCH_MULTIPLIER = int(os.getenv('CELERY_WORKER_PREFETCH_MULTIPLIER', '1'))

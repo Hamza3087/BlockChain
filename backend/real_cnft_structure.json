@@ -1,0 +1,52 @@
+{
+  "status": "structured",
+  "transaction_signature": "Lvj1mxhmMvdcUZVPAYTCSx9npCypm1QnuuygP4rSn2u",
+  "tree_creation": {
+    "tree_address": "FAhELebzD9v3X2KL4mhfPvQJdqYGB8r5sq4YGWVYaj6m",
+    "tree_authority": "45YBV8GGzUNZRfeS45irXanTne2UnnXa8J1FCQxxwAac",
+    "max_depth": 14,
+    "max_nfts": 16384,
+    "program_id": "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY"
+  },
+  "mint_data": {
+    "leaf_address": "7NZRnJDYfzc3WKpVkBRdybXkKZ9Lvm78Wm9cvUzDYUU1",
+    "tree_address": "FAhELebzD9v3X2KL4mhfPvQJdqYGB8r5sq4YGWVYaj6m",
+    "leaf_owner": "45YBV8GGzUNZRfeS45irXanTne2UnnXa8J1FCQxxwAac",
+    "metadata_hash": "56c5c1f4e32ca741aaff86f9449c166d06ae2503b17766721dac7044ab0644b9",
+    "program_id": "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY"
+  },
+  "payer": "45YBV8GGzUNZRfeS45irXanTne2UnnXa8J1FCQxxwAac",
+  "recent_blockhash": "2APpr5QiiwdhU1xBacKsXnBL3UK5VyRuQV9Q6skWx85r",
+  "metadata": {
+    "name": "Real Structure Tree NFT",
+    "symbol": "RSTREE",
+    "description": "A tree NFT with real Metaplex Bubblegum structure",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "https://replantworld.io",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Quercus robur"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Poland"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "50.272521"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "19.639508"
+      },
+      {
+        "trait_type": "Structure Type",
+        "value": "Real Metaplex Bubblegum"
+      }
+    ]
+  },
+  "timestamp": "2025-08-27T03:03:14.757728",
+  "network": "devnet",
+  "type": "real_compressed_nft_structure"
+}

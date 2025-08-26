@@ -1,0 +1,24 @@
+{
+  "migration_job_id": "unknown",
+  "total_processed": 1,
+  "successful": 1,
+  "failed": 0,
+  "success_rate": 100.0,
+  "processing_time": "2025-08-26T21:33:42.153853",
+  "output_directory": "migration_output/20250826_213251",
+  "successful_nfts": [
+    {
+      "token_id": "103",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": "DRiFQkvDHCrBEDN3J2qabd6NhsA2Petbh7FpXTvE8q6k",
+      "tree_address": "2yTPXmcsw94zWXwcPaJuZzJd8EyJuWbRTj2Co4V2Kbg4",
+      "processing_time": "2025-08-26T21:33:41.651647",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 109,
+        "tree_id": null
+      }
+    }
+  ],
+  "failed_nfts": []
+}

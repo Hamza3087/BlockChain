@@ -28,4 +28,12 @@ urlpatterns = [
     # Day 5 endpoints - Sei to Solana Migration
     path('migration/jobs/', views.create_migration_job, name='create_migration_job'),
     path('migration/jobs/list/', views.list_migration_jobs, name='list_migration_jobs'),
+
+    # Day 6 - Integration & System Testing
+    path('integration/run-pipeline/', views.run_end_to_end_pipeline, name='run_end_to_end_pipeline'),
+    path('integration/run-batch/', views.run_batch_migration, name='run_batch_migration'),
+    path('integration/cache-stats/', views.get_cache_stats, name='get_cache_stats'),
+    path('integration/run-test/', views.run_integration_test, name='run_integration_test'),
+    path('integration/performance-metrics/', views.get_performance_metrics, name='get_performance_metrics'),
+    path('integration/test-results/', views.list_integration_test_results, name='list_integration_test_results'),
 ]

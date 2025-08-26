@@ -1,0 +1,86 @@
+{
+  "status": "success",
+  "mint_address": "GgMJGU24opXkbnwMjTyXQ9QgWZsb8c2uiGvwhYdHAwDK",
+  "tree_address": "BFiZSyTvWKDsRQdR77ReHDEaaqbvXrHrAinuncrt55nH",
+  "transaction_signature": "2y4u3Vw3uohHB2HpJm4KtRRCGgyPgqwVEVj25MUnGRoi2USUiSLLfWgscxM7PkgLwvS4KK1vQ8UsW4HGH8S8QcYs",
+  "recipient": "sei1j36p2jn5635wvk0vvqh46htj3njrehjdr7ag3z",
+  "metadata": {
+    "name": "Baobab",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Salix alba"
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "NEAR_THREATENED"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Kiribati"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.279364"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.871154"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$10.00"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "102"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "metadata_uri": "https://ipfs.io/ipfs/Qm24d46e5660a1acdd93bb8393a00d224143210ce71517",
+  "timestamp": "2025-08-26T21:42:24.610192",
+  "network": "devnet",
+  "type": "compressed_nft_simulation"
+}

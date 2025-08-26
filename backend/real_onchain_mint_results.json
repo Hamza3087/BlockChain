@@ -1,0 +1,108 @@
+{
+  "test_timestamp": "2025-08-27T02:50:45.655287",
+  "payer_address": "7zFNHtaCZcBX1sgHrPmjq2iNmC5szn12rnfwN28gQNht",
+  "tree_creation": {
+    "status": "simulated",
+    "tree_address": "Dm2kPqjcHX1jFtikbT38Qpcr88AHVBykwcDDJ1GBdc9A",
+    "transaction_signature": "BV5mQ78JTtBwRambG2PczaBrF89Nxw1xo9sVYPzi3zDP",
+    "max_depth": 14,
+    "max_buffer_size": 64,
+    "max_nfts": 16384,
+    "timestamp": "2025-08-27T02:50:40.638811",
+    "error": "Airdrop failed: {'jsonrpc': '2.0', 'error': {'code': 429, 'message': \"You've either reached your airdrop limit today or the airdrop faucet has run dry. Please visit https://faucet.solana.com for alternate sources of test SOL\"}, 'id': 1}"
+  },
+  "mint_result": {
+    "status": "simulated",
+    "mint_address": "CV7gei1NbeZSx3iaiTcfBBHCwxXByfbDtjMY4wCwxcNh",
+    "tree_address": "Dm2kPqjcHX1jFtikbT38Qpcr88AHVBykwcDDJ1GBdc9A",
+    "transaction_signature": "6Dqs3bABZXycj4ZVBXwrUpz21BHrwDT3NRgMdmWeLX9f",
+    "recipient": "7zFNHtaCZcBX1sgHrPmjq2iNmC5szn12rnfwN28gQNht",
+    "metadata": {
+      "name": "Real Tree NFT #001",
+      "symbol": "RTREE",
+      "description": "A real tree NFT minted on Solana devnet using actual transactions",
+      "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+      "external_url": "https://replantworld.io",
+      "attributes": [
+        {
+          "trait_type": "Botanical Name",
+          "value": "Quercus robur"
+        },
+        {
+          "trait_type": "Country",
+          "value": "Poland"
+        },
+        {
+          "trait_type": "Latitude",
+          "value": "50.272521"
+        },
+        {
+          "trait_type": "Longitude",
+          "value": "19.639508"
+        },
+        {
+          "trait_type": "Planter",
+          "value": "Real Planter"
+        },
+        {
+          "trait_type": "Date Planted",
+          "value": "2024-08-26"
+        },
+        {
+          "trait_type": "Migration Source",
+          "value": "Sei Blockchain"
+        },
+        {
+          "trait_type": "Mint Type",
+          "value": "Real On-Chain"
+        }
+      ]
+    },
+    "metadata_uri": "https://ipfs.io/ipfs/Qm9c75fd62b83e867aa39a7325eead9efe18b69f4c76d7",
+    "timestamp": "2025-08-27T02:50:44.689922",
+    "network": "devnet",
+    "type": "compressed_nft_simulated",
+    "error": "argument 'recent_blockhash': 'Pubkey' object cannot be converted to 'Hash'"
+  },
+  "metadata": {
+    "name": "Real Tree NFT #001",
+    "symbol": "RTREE",
+    "description": "A real tree NFT minted on Solana devnet using actual transactions",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "https://replantworld.io",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Quercus robur"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Poland"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "50.272521"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "19.639508"
+      },
+      {
+        "trait_type": "Planter",
+        "value": "Real Planter"
+      },
+      {
+        "trait_type": "Date Planted",
+        "value": "2024-08-26"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Mint Type",
+        "value": "Real On-Chain"
+      }
+    ]
+  }
+}
