@@ -15,7 +15,7 @@ SOLANA_RPC_ENDPOINTS = {
         },
         {
             'name': 'Helius Devnet',
-            'url': 'https://devnet.helius-rpc.com/?api-key=demo',
+            'url': 'https://devnet.helius-rpc.com/?api-key=4cd90c8d-a05e-4c44-bf4c-d4d41889d31e',
             'priority': 2
         },
         {
@@ -32,7 +32,7 @@ SOLANA_RPC_ENDPOINTS = {
         },
         {
             'name': 'Helius Mainnet',
-            'url': 'https://mainnet.helius-rpc.com/?api-key=demo',
+            'url': 'https://mainnet.helius-rpc.com/?api-key=4cd90c8d-a05e-4c44-bf4c-d4d41889d31e',
             'priority': 2
         },
         {

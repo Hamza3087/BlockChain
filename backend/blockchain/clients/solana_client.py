@@ -8,6 +8,7 @@ automatic failover, retry logic, and comprehensive health monitoring.
 import asyncio
 import random
 import time
+from datetime import datetime
 from typing import List, Optional, Dict, Any, Union
 from dataclasses import dataclass
 from enum import Enum
@@ -454,63 +455,88 @@ class SolanaClient:
 
     async def mint_compressed_nft(self, metadata: Dict[str, Any], recipient: str = None) -> Dict[str, Any]:
         """
-        Mint a compressed NFT using real Metaplex Bubblegum structure.
+        Mint a real compressed NFT on Solana devnet with actual on-chain transactions.
 
         Args:
             metadata: NFT metadata
-            recipient: Recipient address (optional, uses default if not provided)
+            recipient: Recipient address (optional, uses funded account if not provided)
 
         Returns:
-            Minting result with transaction signature and addresses
+            Real minting result with actual transaction signature and addresses
         """
         try:
-            # Import the real structure creator
-            import sys
-            import os
-            sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-            from create_real_cnft_structure import RealCNFTStructureCreator
+            # Import the real on-chain client
+            from .real_onchain_client import RealOnChainClient
 
-            # Create real compressed NFT structure
-            structure_creator = RealCNFTStructureCreator()
-            cnft_data = structure_creator.create_complete_cnft_transaction(metadata)
+            # Initialize with funded account from keypair file
+            funded_account_secret = "/home/hamza/my_devnet_wallet.json"
+            real_client = RealOnChainClient(
+                rpc_url="https://api.devnet.solana.com",
+                funded_account_secret=funded_account_secret
+            )
 
-            # Extract the relevant data
-            tree_data = cnft_data["tree_creation"]
-            mint_data = cnft_data["mint_data"]
+            # Initialize the client
+            await real_client.initialize()
+
+            # Create or get a Merkle tree for compressed NFTs
+            tree_result = await real_client.create_merkle_tree(
+                max_depth=14,  # Supports up to 16,384 NFTs
+                max_buffer_size=64
+            )
+
+            if tree_result["status"] != "success":
+                raise Exception(f"Failed to create Merkle tree: {tree_result}")
+
+            # Mint the compressed NFT on the tree
+            mint_result = await real_client.mint_compressed_nft(
+                tree_address=tree_result["tree_address"],
+                metadata=metadata,
+                recipient=recipient
+            )
+
+            if mint_result["status"] != "success":
+                raise Exception(f"Failed to mint compressed NFT: {mint_result}")
 
             self.logger.info(
-                "Real compressed NFT structure created",
-                mint_address=mint_data["leaf_address"],
-                tree_address=tree_data["tree_address"],
-                tx_signature=cnft_data["transaction_signature"]
+                "Real compressed NFT minted on-chain",
+                mint_address=mint_result["mint_address"],
+                tree_address=mint_result["tree_address"],
+                tx_signature=mint_result["transaction_signature"]
             )
 
             return {
                 'status': 'success',
-                'mint_address': mint_data["leaf_address"],
-                'tree_address': tree_data["tree_address"],
-                'transaction_signature': cnft_data["transaction_signature"],
-                'recipient': recipient or mint_data["leaf_owner"],
+                'mint_address': mint_result["mint_address"],
+                'tree_address': mint_result["tree_address"],
+                'transaction_signature': mint_result["transaction_signature"],
+                'recipient': mint_result["recipient"],
                 'metadata': metadata,
-                'metadata_uri': f"https://ipfs.io/ipfs/Qm{cnft_data['mint_data']['metadata_hash'][:44]}",
-                'timestamp': cnft_data["timestamp"],
+                'metadata_uri': mint_result["metadata_uri"],
+                'timestamp': mint_result["timestamp"],
                 'network': 'devnet',
-                'type': 'real_compressed_nft_structure',
-                'program_id': tree_data["program_id"],
-                'payer': cnft_data["payer"],
-                'max_depth': tree_data["max_depth"],
-                'max_nfts': tree_data["max_nfts"]
+                'type': 'real_onchain_compressed_nft',
+                'program_id': mint_result.get("program_id", "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY"),
+                'payer': mint_result.get("payer"),
+                'is_real_onchain': True,
+                'verification_url': f"https://explorer.solana.com/tx/{mint_result['transaction_signature']}?cluster=devnet"
             }
 
         except Exception as e:
             self.logger.error(
-                "Failed to create real compressed NFT structure",
+                "Failed to mint real compressed NFT on-chain",
                 error=str(e),
                 metadata_name=metadata.get('name', 'unknown')
             )
 
-            # Fallback to realistic simulation
-            return await self._mint_testnet_simulation(metadata, recipient)
+            # Return error - no fallback to simulation as per requirements
+            return {
+                'status': 'error',
+                'error': str(e),
+                'metadata': metadata,
+                'timestamp': datetime.now().isoformat(),
+                'network': 'devnet',
+                'type': 'failed_real_onchain_mint'
+            }
 
 
 

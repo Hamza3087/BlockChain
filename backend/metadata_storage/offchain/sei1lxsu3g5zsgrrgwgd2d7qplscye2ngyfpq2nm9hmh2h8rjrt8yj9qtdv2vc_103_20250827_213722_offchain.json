@@ -1,0 +1,84 @@
+{
+  "name": "Zamioculcas",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Zamioculcas zamiifolia"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "DATA_DEFICIENT"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Bosnia and Herzegovina"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.279798"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.876365"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Planting Org"
+    },
+    {
+      "trait_type": "planter",
+      "value": "kasia-antos"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$7.00"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  },
+  "migration_data": {
+    "original_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "original_token_id": "103",
+    "migration_timestamp": "2025-08-27T21:37:22.699730",
+    "source_blockchain": "sei",
+    "target_blockchain": "solana",
+    "migration_version": "1.0"
+  },
+  "verification": {
+    "original_hash": "3c028b4039a08765474bb170887fe3e86bf8356eb1c463fe6c537cd09c429369",
+    "solana_hash": "cf203131f332e30074516cd5a295e413f2878acb2e502f4e71064a4161782ef8"
+  }
+}

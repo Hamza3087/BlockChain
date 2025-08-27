@@ -1,0 +1,54 @@
+{
+  "edition": 1,
+  "symbol": "RPLNT",
+  "collection": "Replant World",
+  "name": "Zamioculcas",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Zamioculcas zamiifolia"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "DATA_DEFICIENT"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Mayotte"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.280987"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.875587"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Replant World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "SumarniLaman"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$3.00"
+    }
+  ]
+}

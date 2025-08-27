@@ -1,0 +1,68 @@
+{
+  "name": "Pine",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://bafybeifqpc3hjwh37cqjc4l5ms6673rpslfhb6je2meobqj34efjruqwum.ipfs.nftstorage.link/10.png",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Pinus"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Poland"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "19.639508"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "50.272521"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "Yes"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Green World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "kasia-antos"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-02-16"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$0.25"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://bafybeifqpc3hjwh37cqjc4l5ms6673rpslfhb6je2meobqj34efjruqwum.ipfs.nftstorage.link/10.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  }
+}

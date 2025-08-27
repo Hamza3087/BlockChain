@@ -506,6 +506,32 @@ class SeiNFT(TimestampedModel):
         help_text="Solana compressed NFT asset ID"
     )
 
+    # Additional Solana on-chain data
+    solana_tree_address = models.CharField(
+        max_length=44,
+        blank=True,
+        db_index=True,
+        help_text="Solana Merkle tree address for compressed NFT"
+    )
+
+    solana_transaction_signature = models.CharField(
+        max_length=88,
+        blank=True,
+        db_index=True,
+        help_text="Solana transaction signature for minting"
+    )
+
+    solana_metadata_uri = models.URLField(
+        blank=True,
+        help_text="URI to off-chain metadata stored for Solana NFT"
+    )
+
+    is_real_onchain = models.BooleanField(
+        default=False,
+        db_index=True,
+        help_text="Whether this NFT was actually minted on-chain (not simulated)"
+    )
+
     # Migration tracking
     migration_job = models.ForeignKey(
         'MigrationJob',

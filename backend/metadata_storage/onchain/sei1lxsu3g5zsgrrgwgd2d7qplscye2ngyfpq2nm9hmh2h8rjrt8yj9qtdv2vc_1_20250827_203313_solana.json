@@ -1,0 +1,68 @@
+{
+  "name": "Larch",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://bafybeif5izk4f64nju43bemsh5oqaba4lwq5p22ooafjeiuecko7k7vheu.ipfs.nftstorage.link/1.png",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Larix"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Poland"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "19.639689"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "50.272573"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "Yes"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Green World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "kasia-antos"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-02-19"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Katarzyna Antos"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$0.50"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://bafybeif5izk4f64nju43bemsh5oqaba4lwq5p22ooafjeiuecko7k7vheu.ipfs.nftstorage.link/1.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  }
+}

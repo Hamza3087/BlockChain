@@ -31,6 +31,7 @@ from blockchain.clients.solana_client import SolanaClient
 from blockchain.migration.data_exporter import DataExporter
 from blockchain.migration.migration_mapper import MigrationMapper
 from blockchain.migration.migration_validator import MigrationValidator
+from blockchain.services.metadata_storage import MetadataStorageService
 
 
 class SeiDataFetcher:
@@ -155,12 +156,13 @@ class CompleteMigrationPipeline:
         self.data_exporter = DataExporter()
         self.migration_mapper = MigrationMapper()
         self.migration_validator = MigrationValidator()
+        self.metadata_storage = MetadataStorageService()
         self.solana_client = None
-        
+
         # Create output directory
         self.output_dir = Path("migration_output") / datetime.now().strftime("%Y%m%d_%H%M%S")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         print(f"📁 Output directory: {self.output_dir}")
     
     async def initialize(self):
@@ -239,24 +241,60 @@ class CompleteMigrationPipeline:
             
             with open(nft_folder / "04_solana_mint_result.json", 'w') as f:
                 json.dump(mint_result, f, indent=2)
-            
-            # Step 5: Store in database
+
+            # Step 5: Store metadata in proper format
+            print(f"💾 Storing metadata for token {token_id}...")
+            original_metadata = token_data.get('metadata', {})
+            solana_metadata = self.metadata_storage.create_solana_metadata(original_metadata, token_id)
+
+            metadata_storage_result = await self.metadata_storage.store_metadata(
+                original_metadata=original_metadata,
+                solana_metadata=solana_metadata,
+                token_id=token_id,
+                contract_address=self.sei_fetcher.contract_address
+            )
+
+            with open(nft_folder / "05_metadata_storage_result.json", 'w') as f:
+                json.dump(metadata_storage_result, f, indent=2)
+
+            # Step 6: Store in database
             @sync_to_async
             def create_database_records():
                 with transaction.atomic():
-                    # Create SeiNFT record with correct field names
+                    # Create SeiNFT record with correct field names and real on-chain data
                     metadata = token_data.get('metadata', {})
-                    sei_nft = SeiNFT.objects.create(
-                        sei_token_id=token_data['token_id'],
+
+                    # Generate data hash for integrity verification
+                    import hashlib
+                    data_hash = hashlib.sha256(json.dumps(token_data, sort_keys=True).encode()).hexdigest()
+
+                    # Check if NFT already exists and update or create
+                    sei_nft, created = SeiNFT.objects.update_or_create(
                         sei_contract_address=self.sei_fetcher.contract_address,
-                        sei_owner_address=token_data.get('owner', ''),
-                        name=metadata.get('name', f"Tree #{token_data['token_id']}"),
-                        description=metadata.get('description', ''),
-                        image_url=metadata.get('image', ''),
-                        external_url=metadata.get('external_url', ''),
-                        attributes=metadata.get('attributes', []),
-                        migration_job=migration_job
+                        sei_token_id=token_data['token_id'],
+                        defaults={
+                            'sei_owner_address': token_data.get('owner', ''),
+                            'name': metadata.get('name', f"Tree #{token_data['token_id']}"),
+                            'description': metadata.get('description', ''),
+                            'image_url': metadata.get('image', ''),
+                            'external_url': metadata.get('external_url', ''),
+                            'attributes': metadata.get('attributes', []),
+                            'migration_job': migration_job,
+                            # Real on-chain Solana data
+                            'solana_mint_address': mint_result.get('mint_address', ''),
+                            'solana_tree_address': mint_result.get('tree_address', ''),
+                            'solana_transaction_signature': mint_result.get('transaction_signature', ''),
+                            'solana_metadata_uri': metadata_storage_result.get('solana_uri', ''),
+                            'is_real_onchain': mint_result.get('status') == 'success' and mint_result.get('type') == 'real_onchain_compressed_nft',
+                            'migration_date': datetime.now(),
+                            'sei_data_hash': data_hash
+                        }
                     )
+
+                    if created:
+                        print(f"✅ Created new SeiNFT record for token {token_id}")
+                    else:
+                        print(f"🔄 Updated existing SeiNFT record for token {token_id}")
 
                     # Create Tree record if it's a tree NFT
                     tree = None
@@ -283,7 +321,6 @@ class CompleteMigrationPipeline:
                         date_str = attributes.get('Date planted', '')
                         if date_str:
                             try:
-                                from datetime import datetime
                                 planting_date = datetime.strptime(date_str, '%Y-%m-%d').date()
                             except ValueError:
                                 try:
@@ -302,32 +339,95 @@ class CompleteMigrationPipeline:
                         )
                         owner_user = system_user
 
-                        tree = Tree.objects.create(
-                            mint_address=mint_result.get('mint_address', ''),
-                            merkle_tree_address=mint_result.get('tree_address', ''),
-                            leaf_index=0,  # Default value, would be set by actual Solana minting
-                            asset_id=mint_result.get('mint_address', ''),  # Use mint address as asset ID
-                            species=attributes.get('Botanical Name', 'Unknown Species'),
-                            planted_date=planting_date or datetime.now().date(),
-                            location_latitude=float(attributes.get('Latitude', 0)) if attributes.get('Latitude') else 0,
-                            location_longitude=float(attributes.get('Longitude', 0)) if attributes.get('Longitude') else 0,
-                            location_name=attributes.get('Country', 'Unknown Location'),
-                            owner=owner_user,
-                            planter=planter_user,
-                            image_url=metadata.get('image', ''),
-                            notes=f"Migrated from Sei NFT #{token_data['token_id']}. Sponsor: {attributes.get('Sponsor', 'N/A')}. Organization: {attributes.get('Org/Community', 'N/A')}. IUCN Status: {attributes.get('IUCN status', 'N/A')}."
+                        # Use mint_address as unique identifier, or tree_address if mint_address is empty
+                        unique_identifier = mint_result.get('mint_address', '') or mint_result.get('tree_address', '') or f"temp_{token_id}"
+
+                        tree, tree_created = Tree.objects.update_or_create(
+                            mint_address=unique_identifier,
+                            defaults={
+                                'merkle_tree_address': mint_result.get('tree_address', ''),
+                                'leaf_index': 0,  # Default value, would be set by actual Solana minting
+                                'asset_id': mint_result.get('mint_address', '') or unique_identifier,  # Use mint address as asset ID
+                                'species': attributes.get('Botanical Name', 'Unknown Species'),
+                                'planted_date': planting_date or datetime.now().date(),
+                                'location_latitude': float(attributes.get('Latitude', 0)) if attributes.get('Latitude') else 0,
+                                'location_longitude': float(attributes.get('Longitude', 0)) if attributes.get('Longitude') else 0,
+                                'location_name': attributes.get('Country', 'Unknown Location'),
+                                'owner': owner_user,
+                                'planter': planter_user,
+                                'image_url': metadata.get('image', ''),
+                                'notes': f"Migrated from Sei NFT #{token_data['token_id']}. Sponsor: {attributes.get('Sponsor', 'N/A')}. Organization: {attributes.get('Org/Community', 'N/A')}. IUCN Status: {attributes.get('IUCN status', 'N/A')}."
+                            }
                         )
+
+                        if tree_created:
+                            print(f"✅ Created new Tree record for token {token_id}")
+                        else:
+                            print(f"🔄 Updated existing Tree record for token {token_id}")
 
                     return sei_nft, tree
 
             sei_nft, tree = await create_database_records()
             
-            # Step 6: Create summary
+            # Step 7: Create verification commands
+            verification_script = ""
+            if mint_result.get('transaction_signature'):
+                # Transaction verification
+                verification_script += self.metadata_storage.create_verification_command(
+                    mint_result['transaction_signature']
+                )
+                verification_script += "\n\n"
+
+            if mint_result.get('tree_address'):
+                # Tree verification
+                tree_address = mint_result['tree_address']
+                verification_script += f"""
+# Verify Merkle Tree Account
+echo "=== Verifying Merkle Tree Account ==="
+solana account {tree_address} --url https://api.devnet.solana.com
+
+# Check tree account info via RPC
+echo "=== Tree Account Info via RPC ==="
+curl -X POST -H "Content-Type: application/json" -d '{{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "getAccountInfo",
+    "params": [
+        "{tree_address}",
+        {{
+            "encoding": "base64"
+        }}
+    ]
+}}' https://api.devnet.solana.com
+
+# View on Solana Explorer
+echo "View Tree on Solana Explorer: https://explorer.solana.com/address/{tree_address}?cluster=devnet"
+"""
+
+            if verification_script:
+                with open(nft_folder / "06_verification_commands.sh", 'w') as f:
+                    f.write(verification_script)
+
+                print(f"✅ Verification commands saved to: {nft_folder / '06_verification_commands.sh'}")
+
+                # Make the script executable
+                import os
+                os.chmod(nft_folder / "06_verification_commands.sh", 0o755)
+
+            # Step 8: Create summary
             summary = {
                 'token_id': token_id,
                 'sei_contract': self.sei_fetcher.contract_address,
                 'solana_mint': mint_result.get('mint_address'),
                 'tree_address': mint_result.get('tree_address'),
+                'transaction_signature': mint_result.get('transaction_signature'),
+                'is_real_onchain': mint_result.get('status') == 'success' and mint_result.get('type') == 'real_onchain_compressed_nft',
+                'metadata_uris': {
+                    'solana_uri': metadata_storage_result.get('solana_uri'),
+                    'offchain_uri': metadata_storage_result.get('offchain_uri'),
+                    'original_uri': metadata_storage_result.get('original_uri')
+                },
+                'verification_url': mint_result.get('verification_url'),
                 'processing_time': datetime.now().isoformat(),
                 'status': 'completed',
                 'database_records': {
@@ -335,8 +435,8 @@ class CompleteMigrationPipeline:
                     'tree_id': getattr(tree, 'id', None) if tree else None
                 }
             }
-            
-            with open(nft_folder / "05_migration_summary.json", 'w') as f:
+
+            with open(nft_folder / "07_migration_summary.json", 'w') as f:
                 json.dump(summary, f, indent=2)
             
             print(f"✅ Successfully processed NFT {token_id}")

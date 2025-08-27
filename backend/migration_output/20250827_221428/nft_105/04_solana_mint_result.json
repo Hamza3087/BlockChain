@@ -1,0 +1,82 @@
+{
+  "status": "error",
+  "error": "Failed to create Merkle tree: {'status': 'error', 'error': 'Transaction failed: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x7d6', 'response': {'jsonrpc': '2.0', 'error': {'code': -32002, 'message': 'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x7d6', 'data': {'accounts': None, 'err': {'InstructionError': [0, {'Custom': 2006}]}, 'innerInstructions': None, 'loadedAccountsDataSize': 159, 'logs': ['Program BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY invoke [1]', 'Program log: Instruction: CreateTree', 'Program log: AnchorError caused by account: tree_authority. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated.', 'Program log: Left:', 'Program log: 96HuUtpMkuUhqgRwQnfrJ4QZFi4FjTjdZ6zhZ3Kt8aTM', 'Program log: Right:', 'Program log: 7kSGFZ42UHtMzAB5cH37sXMhyGUQhcWtuEm1uVbX7SSZ', 'Program BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY consumed 6595 of 200000 compute units', 'Program BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY failed: custom program error: 0x7d6'], 'replacementBlockhash': None, 'returnData': None, 'unitsConsumed': 6595}}, 'id': 1}}",
+  "metadata": {
+    "name": "Zamioculcas",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Zamioculcas zamiifolia"
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "DATA_DEFICIENT"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Mayotte"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.280987"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.875587"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Replant World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "SumarniLaman"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$3.00"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "105"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "timestamp": "2025-08-27T22:15:37.525315",
+  "network": "devnet",
+  "type": "failed_real_onchain_mint"
+}
