@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const { createUmi } = require('@metaplex-foundation/umi-bundle-defaults');
+const https = require('https');
 const { createSignerFromKeypair, publicKey, keypairIdentity } = require('@metaplex-foundation/umi');
 const { mplBubblegum, mintV1, findTreeConfigPda, parseLeafFromMintV1Transaction, findLeafAssetIdPda } = require('@metaplex-foundation/mpl-bubblegum');
 const bs58 = require('bs58');

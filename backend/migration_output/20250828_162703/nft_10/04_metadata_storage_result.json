@@ -1,0 +1,8 @@
+{
+  "original_path": "metadata_storage/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_original.json",
+  "solana_path": "metadata_storage/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_solana.json",
+  "offchain_path": "metadata_storage/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_offchain.json",
+  "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_solana.json",
+  "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_offchain.json",
+  "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_original.json"
+}

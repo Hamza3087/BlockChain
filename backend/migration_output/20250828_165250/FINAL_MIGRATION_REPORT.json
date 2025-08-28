@@ -1,0 +1,72 @@
+{
+  "migration_job_id": "unknown",
+  "total_processed": 3,
+  "successful": 3,
+  "failed": 0,
+  "success_rate": 100.0,
+  "processing_time": "2025-08-28T16:54:18.432641",
+  "output_directory": "migration_output/20250828_165250",
+  "successful_nfts": [
+    {
+      "token_id": "1",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "3M4pr3KDadRvQPDzY18CMDKQWeGiaVeFki57hRLoYFhD5f5SBC2uFDNnHa5VUCVE9LMbYHoEU79rsQoxYEmcHyYt",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_165328_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_165328_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_165328_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/3M4pr3KDadRvQPDzY18CMDKQWeGiaVeFki57hRLoYFhD5f5SBC2uFDNnHa5VUCVE9LMbYHoEU79rsQoxYEmcHyYt?cluster=devnet",
+      "processing_time": "2025-08-28T16:53:48.126390",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 199,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "103",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "3GYx7znWtrf8iQRJA4W9Qx76FZtmfjtcDriWcxbVVUBZuWXp4RzzUBcngQdXMWd8gcGCxsCr7aFsRWmEamYaipvE",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_103_20250828_165348_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_103_20250828_165348_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_103_20250828_165348_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/3GYx7znWtrf8iQRJA4W9Qx76FZtmfjtcDriWcxbVVUBZuWXp4RzzUBcngQdXMWd8gcGCxsCr7aFsRWmEamYaipvE?cluster=devnet",
+      "processing_time": "2025-08-28T16:54:03.282663",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 200,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "100",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "24c8eCwtFDsAZ7TK7oUxzXtMsJJ5QJYxiSuAn2Whr55u4CHBds4b38NgJdv9hbbiNeejnnkrxnLsRxDhT3inmH5D",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_100_20250828_165403_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_100_20250828_165403_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_100_20250828_165403_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/24c8eCwtFDsAZ7TK7oUxzXtMsJJ5QJYxiSuAn2Whr55u4CHBds4b38NgJdv9hbbiNeejnnkrxnLsRxDhT3inmH5D?cluster=devnet",
+      "processing_time": "2025-08-28T16:54:17.931450",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 201,
+        "tree_id": null
+      }
+    }
+  ],
+  "failed_nfts": []
+}

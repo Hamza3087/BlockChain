@@ -17,6 +17,8 @@ from blockchain.services.solana_nft_retriever import SolanaNFTRetriever
 
 class MigrationStatusView(View):
     """Get migration status and statistics."""
+
+    
     
     async def get(self, request):
         """Get overall migration statistics."""

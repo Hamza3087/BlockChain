@@ -268,6 +268,31 @@ class CompleteMigrationPipeline:
                     # Create SeiNFT record with correct field names and real on-chain data
                     metadata = token_data.get('metadata', {})
 
+                    # Prefer the exact off-chain metadata we stored for Solana over the original Sei metadata
+                    offchain_meta = {}
+                    try:
+                        offchain_rel = metadata_storage_result.get('offchain_path', '')
+                        if offchain_rel:
+                            offchain_path = (nft_folder / offchain_rel)
+                            if offchain_path.exists():
+                                with open(offchain_path, 'r') as of:
+                                    offchain_meta = json.load(of)
+                    except Exception:
+                        offchain_meta = {}
+
+                    meta_src = offchain_meta or metadata or {}
+
+                    # Extract common fields from off-chain metadata
+                    mapped_name = meta_src.get('name', f"Tree #{token_data['token_id']}")
+                    mapped_desc = meta_src.get('description', '')
+                    # Prefer top-level image; otherwise fallback to properties.files[0].uri if present
+                    mapped_image = meta_src.get('image') or next(
+                        (f.get('uri') for f in (meta_src.get('properties', {}).get('files') or []) if f.get('uri')),
+                        ''
+                    )
+                    mapped_external = meta_src.get('external_url', '')
+                    mapped_attributes = meta_src.get('attributes', [])
+
                     # Generate data hash for integrity verification
                     import hashlib
                     data_hash = hashlib.sha256(json.dumps(token_data, sort_keys=True).encode()).hexdigest()
@@ -278,18 +303,18 @@ class CompleteMigrationPipeline:
                         sei_token_id=token_data['token_id'],
                         defaults={
                             'sei_owner_address': token_data.get('owner', ''),
-                            'name': metadata.get('name', f"Tree #{token_data['token_id']}"),
-                            'description': metadata.get('description', ''),
-                            'image_url': metadata.get('image', ''),
-                            'external_url': metadata.get('external_url', ''),
-                            'attributes': metadata.get('attributes', []),
+                            'name': mapped_name,
+                            'description': mapped_desc,
+                            'image_url': mapped_image,
+                            'external_url': mapped_external,
+                            'attributes': mapped_attributes,
                             'migration_job': migration_job,
                             # Real on-chain Solana data
                             'solana_mint_address': mint_result.get('mint_address') or mint_result.get('asset_id') or '',
                             'solana_asset_id': mint_result.get('asset_id') or mint_result.get('mint_address') or '',
                             'solana_tree_address': mint_result.get('tree_address', ''),
                             'solana_transaction_signature': mint_result.get('transaction_signature', ''),
-                            'solana_metadata_uri': metadata_storage_result.get('solana_uri', ''),
+                            'solana_metadata_uri': metadata_storage_result.get('offchain_uri', ''),
                             'is_real_onchain': mint_result.get('status') == 'success' and mint_result.get('type') == 'real_onchain_compressed_nft',
                             'migration_date': datetime.now(),
                             'sei_data_hash': data_hash

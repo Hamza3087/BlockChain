@@ -1,0 +1,67 @@
+{
+  "token_id": "1",
+  "token_uri": "https://bafybeibhhss7vibablu775vsue55bfkk3blpsxo6sdgf2wsfctws7yllfa.ipfs.nftstorage.link/1.json",
+  "extension": null,
+  "owner": "sei1cwqhc9t7af2sy0uwhf3u3pqs80rpqjffg8nqk5",
+  "approvals": [],
+  "metadata": {
+    "edition": 1,
+    "symbol": "RPLNT",
+    "collection": "Replant World",
+    "name": "Larch",
+    "description": "https://replantworld.io",
+    "image": "https://bafybeif5izk4f64nju43bemsh5oqaba4lwq5p22ooafjeiuecko7k7vheu.ipfs.nftstorage.link/1.png",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Larix"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Poland"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "19.639689"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "50.272573"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "Yes"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-02-19"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Katarzyna Antos"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$0.50"
+      }
+    ]
+  },
+  "attr_botanical_name": "Larix",
+  "attr_country": "Poland",
+  "attr_longitude": "19.639689",
+  "attr_latitude": "50.272573",
+  "attr_is_native": "Yes",
+  "attr_org_community": "Green World",
+  "attr_planter": "kasia-antos",
+  "attr_date_planted": "2024-02-19",
+  "attr_sponsor": "Katarzyna Antos",
+  "attr_planting_cost": "$0.50"
+}

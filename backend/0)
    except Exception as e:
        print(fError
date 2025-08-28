@@ -1,0 +1,4 @@
+Operations to perform:
+  Apply all migrations: admin, auth, blockchain, contenttypes, sessions
+Running migrations:
+  No migrations to apply.

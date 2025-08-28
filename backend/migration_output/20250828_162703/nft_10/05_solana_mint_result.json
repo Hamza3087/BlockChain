@@ -1,0 +1,86 @@
+{
+  "status": "success",
+  "mint_address": null,
+  "asset_id": null,
+  "leaf_index": null,
+  "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+  "transaction_signature": "4fAYkCvVPRejonTEszNcDNG2UcDLQLr7S2EqxEPsStbPXomDQVqPAa8LjteLCSHZwrz6KtPqsRpFZs9yr8RGuQiz",
+  "recipient": "sei1j36p2jn5635wvk0vvqh46htj3njrehjdr7ag3z",
+  "metadata": {
+    "name": "Pine",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://bafybeifqpc3hjwh37cqjc4l5ms6673rpslfhb6je2meobqj34efjruqwum.ipfs.nftstorage.link/10.png",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Pinus"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Poland"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "19.639508"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "50.272521"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "Yes"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-02-16"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$0.25"
+      }
+    ],
+    "properties": {
+      "files": [
+        {
+          "uri": "https://bafybeifqpc3hjwh37cqjc4l5ms6673rpslfhb6je2meobqj34efjruqwum.ipfs.nftstorage.link/10.png",
+          "type": "image/png"
+        }
+      ],
+      "category": "image",
+      "creators": [
+        {
+          "address": "ReplantWorldCreatorAddress",
+          "share": 100
+        }
+      ]
+    },
+    "collection": {
+      "name": "ReplantWorld Trees",
+      "family": "ReplantWorld"
+    },
+    "uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_offchain.json"
+  },
+  "metadata_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_10_20250828_162829_offchain.json",
+  "timestamp": "2025-08-28T16:28:52.088169",
+  "network": "devnet",
+  "type": "real_onchain_compressed_nft",
+  "program_id": "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY",
+  "payer": null,
+  "is_real_onchain": true,
+  "verification_url": "https://explorer.solana.com/tx/4fAYkCvVPRejonTEszNcDNG2UcDLQLr7S2EqxEPsStbPXomDQVqPAa8LjteLCSHZwrz6KtPqsRpFZs9yr8RGuQiz?cluster=devnet"
+}
