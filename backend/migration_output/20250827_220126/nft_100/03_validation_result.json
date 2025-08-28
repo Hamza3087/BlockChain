@@ -1,8 +1,0 @@
-{
-  "is_valid": true,
-  "errors": [],
-  "warnings": [
-    "NFT already exists in database with status: completed"
-  ],
-  "validation_timestamp": 1756332155.671027
-}

@@ -1,0 +1,62 @@
+{
+  "name": "Larch",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "0.png",
+  "seller_fee_basis_points": 500,
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Larix"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Poland"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "19.639689"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "50.272573"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "Yes"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Green World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "kasia-antos"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-02-19"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Katarzyna Antos"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$0.50"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "0.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  },
+  "collection": {
+    "name": "Replant World",
+    "family": "Replant World"
+  }
+}

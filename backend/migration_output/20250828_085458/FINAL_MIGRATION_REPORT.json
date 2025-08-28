@@ -1,0 +1,32 @@
+{
+  "migration_job_id": "unknown",
+  "total_processed": 1,
+  "successful": 1,
+  "failed": 0,
+  "success_rate": 100.0,
+  "processing_time": "2025-08-28T08:56:42.843896",
+  "output_directory": "migration_output/20250828_085458",
+  "successful_nfts": [
+    {
+      "token_id": "1",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": null,
+      "transaction_signature": null,
+      "is_real_onchain": false,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_085641_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_085641_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_085641_original.json"
+      },
+      "verification_url": null,
+      "processing_time": "2025-08-28T08:56:42.341343",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 195,
+        "tree_id": null
+      }
+    }
+  ],
+  "failed_nfts": []
+}

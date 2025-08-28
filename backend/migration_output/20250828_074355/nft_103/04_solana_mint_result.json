@@ -1,0 +1,82 @@
+{
+  "status": "error",
+  "error": "Failed to create Merkle tree: {'status': 'error', 'error': 'Transaction failed: Transaction simulation failed: Error processing Instruction 1: custom program error: 0x65', 'response': {'jsonrpc': '2.0', 'error': {'code': -32002, 'message': 'Transaction simulation failed: Error processing Instruction 1: custom program error: 0x65', 'data': {'accounts': None, 'err': {'InstructionError': [1, {'Custom': 101}]}, 'innerInstructions': None, 'loadedAccountsDataSize': 159, 'logs': ['Program 11111111111111111111111111111111 invoke [1]', 'Program 11111111111111111111111111111111 success', 'Program cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK invoke [1]', 'Program log: AnchorError occurred. Error Code: InstructionFallbackNotFound. Error Number: 101. Error Message: Fallback functions are not supported.', 'Program cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK consumed 2048 of 402850 compute units', 'Program cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK failed: custom program error: 0x65'], 'replacementBlockhash': None, 'returnData': None, 'unitsConsumed': 2198}}, 'id': 1}}",
+  "metadata": {
+    "name": "Zamioculcas",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Zamioculcas zamiifolia"
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "DATA_DEFICIENT"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Bosnia and Herzegovina"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.279798"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.876365"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Planting Org"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$7.00"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "103"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "timestamp": "2025-08-28T07:44:52.577219",
+  "network": "devnet",
+  "type": "failed_real_onchain_mint"
+}

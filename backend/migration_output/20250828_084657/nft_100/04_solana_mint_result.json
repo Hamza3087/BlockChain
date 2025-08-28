@@ -1,0 +1,82 @@
+{
+  "status": "error",
+  "error": "Failed to create Merkle tree: {'status': 'error', 'error': \"Node.js script failed: node:internal/modules/cjs/loader:1137\\n  throw err;\\n  ^\\n\\nError: Cannot find module '@solana/web3.js'\\nRequire stack:\\n- /tmp/tmp1vlt6azs.js\\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1134:15)\\n    at Module._load (node:internal/modules/cjs/loader:975:27)\\n    at Module.require (node:internal/modules/cjs/loader:1225:19)\\n    at require (node:internal/modules/helpers:177:18)\\n    at Object.<anonymous> (/tmp/tmp1vlt6azs.js:2:48)\\n    at Module._compile (node:internal/modules/cjs/loader:1356:14)\\n    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)\\n    at Module.load (node:internal/modules/cjs/loader:1197:32)\\n    at Module._load (node:internal/modules/cjs/loader:1013:12)\\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12) {\\n  code: 'MODULE_NOT_FOUND',\\n  requireStack: [ '/tmp/tmp1vlt6azs.js' ]\\n}\\n\\nNode.js v18.19.0\\n\"}",
+  "metadata": {
+    "name": "Dracena",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Dracaena Vand."
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "DATA_DEFICIENT"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Western Sahara"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.281354"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.874252"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$8.00"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "100"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "timestamp": "2025-08-28T08:48:13.117938",
+  "network": "devnet",
+  "type": "failed_real_onchain_mint"
+}

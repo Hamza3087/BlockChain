@@ -1,0 +1,78 @@
+{
+  "status": "error",
+  "error": "Failed to create Merkle tree: {'status': 'error', 'error': 'Transaction failed: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x65', 'response': {'jsonrpc': '2.0', 'error': {'code': -32002, 'message': 'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x65', 'data': {'accounts': None, 'err': {'InstructionError': [0, {'Custom': 101}]}, 'innerInstructions': None, 'loadedAccountsDataSize': 159, 'logs': ['Program cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK invoke [1]', 'Program log: AnchorError occurred. Error Code: InstructionFallbackNotFound. Error Number: 101. Error Message: Fallback functions are not supported.', 'Program cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK consumed 2048 of 400000 compute units', 'Program cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK failed: custom program error: 0x65'], 'replacementBlockhash': None, 'returnData': None, 'unitsConsumed': 2048}}, 'id': 1}}",
+  "metadata": {
+    "name": "Larch",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://bafybeif5izk4f64nju43bemsh5oqaba4lwq5p22ooafjeiuecko7k7vheu.ipfs.nftstorage.link/1.png",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Larix"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Poland"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "19.639689"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "50.272573"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "Yes"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-02-19"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Katarzyna Antos"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$0.50"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "1"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://bafybeif5izk4f64nju43bemsh5oqaba4lwq5p22ooafjeiuecko7k7vheu.ipfs.nftstorage.link/1.png",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "timestamp": "2025-08-28T08:56:41.898875",
+  "network": "devnet",
+  "type": "failed_real_onchain_mint"
+}
