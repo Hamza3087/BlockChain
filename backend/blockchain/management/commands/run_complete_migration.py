@@ -232,18 +232,8 @@ class CompleteMigrationPipeline:
             if not validation_result.is_valid:
                 raise Exception(f"Validation failed: {validation_result.validation_errors}")
             
-            # Step 4: Create compressed NFT on Solana
-            print(f"🌱 Minting compressed NFT for token {token_id}...")
-            mint_result = await self.solana_client.mint_compressed_nft(
-                metadata=mapped_data['metadata'],
-                recipient=mapped_data['owner']
-            )
-            
-            with open(nft_folder / "04_solana_mint_result.json", 'w') as f:
-                json.dump(mint_result, f, indent=2)
-
-            # Step 5: Store metadata in proper format
-            print(f"💾 Storing metadata for token {token_id}...")
+            # Step 4: Prepare and store metadata first (so on-chain points to our off-chain JSON)
+            print(f"💾 Preparing and storing metadata for token {token_id}...")
             original_metadata = token_data.get('metadata', {})
             solana_metadata = self.metadata_storage.create_solana_metadata(original_metadata, token_id)
 
@@ -254,8 +244,22 @@ class CompleteMigrationPipeline:
                 contract_address=self.sei_fetcher.contract_address
             )
 
-            with open(nft_folder / "05_metadata_storage_result.json", 'w') as f:
+            with open(nft_folder / "04_metadata_storage_result.json", 'w') as f:
                 json.dump(metadata_storage_result, f, indent=2)
+
+            # Step 5: Create compressed NFT on Solana, using our off-chain URI
+            print(f"🌱 Minting compressed NFT for token {token_id}...")
+            mint_metadata = {
+                **solana_metadata,
+                'uri': metadata_storage_result.get('offchain_uri') or metadata_storage_result.get('solana_uri')
+            }
+            mint_result = await self.solana_client.mint_compressed_nft(
+                metadata=mint_metadata,
+                recipient=mapped_data['owner']
+            )
+
+            with open(nft_folder / "05_solana_mint_result.json", 'w') as f:
+                json.dump(mint_result, f, indent=2)
 
             # Step 6: Store in database
             @sync_to_async
@@ -281,7 +285,8 @@ class CompleteMigrationPipeline:
                             'attributes': metadata.get('attributes', []),
                             'migration_job': migration_job,
                             # Real on-chain Solana data
-                            'solana_mint_address': mint_result.get('mint_address', ''),
+                            'solana_mint_address': mint_result.get('mint_address') or mint_result.get('asset_id') or '',
+                            'solana_asset_id': mint_result.get('asset_id') or mint_result.get('mint_address') or '',
                             'solana_tree_address': mint_result.get('tree_address', ''),
                             'solana_transaction_signature': mint_result.get('transaction_signature', ''),
                             'solana_metadata_uri': metadata_storage_result.get('solana_uri', ''),

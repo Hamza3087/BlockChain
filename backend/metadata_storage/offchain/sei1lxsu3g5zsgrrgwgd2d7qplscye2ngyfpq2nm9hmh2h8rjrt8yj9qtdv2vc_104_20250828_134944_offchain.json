@@ -1,0 +1,84 @@
+{
+  "name": "Aloe",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Aloe succotrina"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "DATA_DEFICIENT"
+    },
+    {
+      "trait_type": "Country",
+      "value": "C\u00f4te d'Ivoire"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.283058"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.878074"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Replant World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "SumarniLaman"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$2.00"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  },
+  "migration_data": {
+    "original_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "original_token_id": "104",
+    "migration_timestamp": "2025-08-28T13:49:44.286765",
+    "source_blockchain": "sei",
+    "target_blockchain": "solana",
+    "migration_version": "1.0"
+  },
+  "verification": {
+    "original_hash": "bfd234117284c481fa78c82e05e2fe55dd6389e2e582cebd7ee323de4fe9aa64",
+    "solana_hash": "d23c8de37cede4b8fbc59ce03037b91801cbd289cf59f8971b77efc705b133a5"
+  }
+}

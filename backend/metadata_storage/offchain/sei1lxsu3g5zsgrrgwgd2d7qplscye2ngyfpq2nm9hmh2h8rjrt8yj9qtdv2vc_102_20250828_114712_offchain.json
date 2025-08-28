@@ -1,0 +1,84 @@
+{
+  "name": "Baobab",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Salix alba"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "NEAR_THREATENED"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Kiribati"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.279364"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.871154"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Green World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "kasia-antos"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$10.00"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  },
+  "migration_data": {
+    "original_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "original_token_id": "102",
+    "migration_timestamp": "2025-08-28T11:47:12.906171",
+    "source_blockchain": "sei",
+    "target_blockchain": "solana",
+    "migration_version": "1.0"
+  },
+  "verification": {
+    "original_hash": "24393a2ec53d86351b1709f92989b37ad47add07f85a9613db744e2d8bc41b4e",
+    "solana_hash": "41ea776a89c495474c6565f7ea0b38b0b4e20fe949441c85932854daffeff026"
+  }
+}

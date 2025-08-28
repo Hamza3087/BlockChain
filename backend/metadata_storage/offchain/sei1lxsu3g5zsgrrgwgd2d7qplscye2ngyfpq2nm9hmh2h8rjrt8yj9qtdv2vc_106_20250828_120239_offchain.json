@@ -1,0 +1,84 @@
+{
+  "name": "Pine",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Pinus"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "DATA_DEFICIENT"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Malta"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.283650"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.875242"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Planting Org"
+    },
+    {
+      "trait_type": "planter",
+      "value": "SumarniLaman"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$4.00"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  },
+  "migration_data": {
+    "original_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "original_token_id": "106",
+    "migration_timestamp": "2025-08-28T12:02:39.958227",
+    "source_blockchain": "sei",
+    "target_blockchain": "solana",
+    "migration_version": "1.0"
+  },
+  "verification": {
+    "original_hash": "1d98651c831d5314c61596630ad99fd1feaf7fb1c9214a44d3364d96d1f0ae06",
+    "solana_hash": "609fb79b90c1908ddbd2f87e4bbda5a465037f43faba375e02a40871d018d655"
+  }
+}

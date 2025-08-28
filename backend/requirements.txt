@@ -34,3 +34,6 @@ factory-boy==3.3.0
 # Note: @metaplex-foundation/mpl-token-metadata is installed via npm
 base58==2.1.1
 borsh-construct==0.1.0
+django-extensions
+psutil
+

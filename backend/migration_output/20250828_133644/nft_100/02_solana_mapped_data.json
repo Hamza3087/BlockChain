@@ -1,0 +1,84 @@
+{
+  "token_id": "100",
+  "owner": "sei1j36p2jn5635wvk0vvqh46htj3njrehjdr7ag3z",
+  "metadata": {
+    "name": "Dracena",
+    "symbol": "RPLNT",
+    "description": "https://replantworld.io",
+    "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+    "external_url": "",
+    "attributes": [
+      {
+        "trait_type": "Botanical Name",
+        "value": "Dracaena Vand."
+      },
+      {
+        "trait_type": "IUCN status",
+        "value": "DATA_DEFICIENT"
+      },
+      {
+        "trait_type": "Country",
+        "value": "Western Sahara"
+      },
+      {
+        "trait_type": "Longitude",
+        "value": "18.281354"
+      },
+      {
+        "trait_type": "Latitude",
+        "value": "7.874252"
+      },
+      {
+        "trait_type": "Is Native",
+        "value": "No"
+      },
+      {
+        "trait_type": "Org/Community",
+        "value": "Green World"
+      },
+      {
+        "trait_type": "planter",
+        "value": "kasia-antos"
+      },
+      {
+        "trait_type": "Date planted",
+        "value": "2024-12-03"
+      },
+      {
+        "trait_type": "Sponsor",
+        "value": "Alicja compass2"
+      },
+      {
+        "trait_type": "planting Cost",
+        "value": "$8.00"
+      },
+      {
+        "trait_type": "Migration Source",
+        "value": "Sei Blockchain"
+      },
+      {
+        "trait_type": "Original Contract",
+        "value": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc"
+      },
+      {
+        "trait_type": "Original Token ID",
+        "value": "100"
+      }
+    ],
+    "properties": {
+      "category": "image",
+      "creators": [],
+      "files": [
+        {
+          "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "original_sei_data": {
+    "contract_address": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "token_uri": "https://ipfs.filebase.io/ipfs/Qmd79AECRXShhC7ghEYLzZHfyEKXQvrisapgrNKjcULu1f",
+    "migration_timestamp": 1756388245.9668615
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "name": "Zamioculcas",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Zamioculcas zamiifolia"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "DATA_DEFICIENT"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Mayotte"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.280987"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.875587"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Replant World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "SumarniLaman"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$3.00"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  },
+  "migration_data": {
+    "original_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "original_token_id": "105",
+    "migration_timestamp": "2025-08-28T11:46:56.123052",
+    "source_blockchain": "sei",
+    "target_blockchain": "solana",
+    "migration_version": "1.0"
+  },
+  "verification": {
+    "original_hash": "4508ff3120662c23435a8f60801642d40043318664b3c375f446e6c8028c31c3",
+    "solana_hash": "7c53aec5f33de2b56d89ff991f442dc6cacca631100f295eb25c22d7d646d54f"
+  }
+}

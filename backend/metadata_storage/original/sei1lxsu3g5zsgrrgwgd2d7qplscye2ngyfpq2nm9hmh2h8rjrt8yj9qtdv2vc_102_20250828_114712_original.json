@@ -1,0 +1,54 @@
+{
+  "edition": 1,
+  "symbol": "RPLNT",
+  "collection": "Replant World",
+  "name": "Baobab",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Salix alba"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "NEAR_THREATENED"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Kiribati"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.279364"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.871154"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Green World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "kasia-antos"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$10.00"
+    }
+  ]
+}

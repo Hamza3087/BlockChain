@@ -1,0 +1,112 @@
+{
+  "migration_job_id": "unknown",
+  "total_processed": 5,
+  "successful": 5,
+  "failed": 0,
+  "success_rate": 100.0,
+  "processing_time": "2025-08-28T13:50:10.793752",
+  "output_directory": "migration_output/20250828_134705",
+  "successful_nfts": [
+    {
+      "token_id": "1",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "4tKYbDERQCtErdRWqPHEcNqLXFFrS9sJZVW4S7mus1GfcHUujzsHceo9WXoQfVQ3fDp3kNWenSacX4LnD8W6JfHy",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_134831_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_134831_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_1_20250828_134831_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/4tKYbDERQCtErdRWqPHEcNqLXFFrS9sJZVW4S7mus1GfcHUujzsHceo9WXoQfVQ3fDp3kNWenSacX4LnD8W6JfHy?cluster=devnet",
+      "processing_time": "2025-08-28T13:48:54.101408",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 195,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "103",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "369ZF8BnCzrnVZDLbf2Nvbzh1KT3jqaiHESsXh2r2BYiPsvBtErDjjfDJawxRGHTcQVahtSq5h91axQJ4EkAtAou",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_103_20250828_134854_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_103_20250828_134854_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_103_20250828_134854_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/369ZF8BnCzrnVZDLbf2Nvbzh1KT3jqaiHESsXh2r2BYiPsvBtErDjjfDJawxRGHTcQVahtSq5h91axQJ4EkAtAou?cluster=devnet",
+      "processing_time": "2025-08-28T13:49:11.648614",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 198,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "107",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "5n9reXirrgKt5zKaq9YwTz8c5uxPM9DwjA8taebLYUboXxfcS3H8JBbrGWCUGZfRZPpqfDq7sLx13wXWTioe5BpC",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_107_20250828_134912_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_107_20250828_134912_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_107_20250828_134912_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/5n9reXirrgKt5zKaq9YwTz8c5uxPM9DwjA8taebLYUboXxfcS3H8JBbrGWCUGZfRZPpqfDq7sLx13wXWTioe5BpC?cluster=devnet",
+      "processing_time": "2025-08-28T13:49:27.490050",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 194,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "106",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "538gywcEYWfZwruVvD95XQLS21QXALTH2S7EYrqeMUVX1vSoCNwUAuRrJQ1EacD4kb8tBHwAocLB5u5okxTkQHTR",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_106_20250828_134928_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_106_20250828_134928_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_106_20250828_134928_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/538gywcEYWfZwruVvD95XQLS21QXALTH2S7EYrqeMUVX1vSoCNwUAuRrJQ1EacD4kb8tBHwAocLB5u5okxTkQHTR?cluster=devnet",
+      "processing_time": "2025-08-28T13:49:43.744848",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 196,
+        "tree_id": null
+      }
+    },
+    {
+      "token_id": "104",
+      "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+      "solana_mint": null,
+      "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+      "transaction_signature": "27mcwjWaetEA1LaS7BbpYPXRDjueJssYqMtbGjvs5buQVQpV1oz3PJeXx7P3egzBv1PhSnw8VdVwDfqr4TENBdgY",
+      "is_real_onchain": true,
+      "metadata_uris": {
+        "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_104_20250828_134944_solana.json",
+        "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_104_20250828_134944_offchain.json",
+        "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_104_20250828_134944_original.json"
+      },
+      "verification_url": "https://explorer.solana.com/tx/27mcwjWaetEA1LaS7BbpYPXRDjueJssYqMtbGjvs5buQVQpV1oz3PJeXx7P3egzBv1PhSnw8VdVwDfqr4TENBdgY?cluster=devnet",
+      "processing_time": "2025-08-28T13:50:10.288268",
+      "status": "completed",
+      "database_records": {
+        "sei_nft_id": 188,
+        "tree_id": null
+      }
+    }
+  ],
+  "failed_nfts": []
+}

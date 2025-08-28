@@ -318,9 +318,9 @@ class RealOnChainClient:
             return False
     
     async def create_merkle_tree(self, max_depth: int = 14, max_buffer_size: int = 64) -> Dict[str, Any]:
-        """Create a REAL Merkle tree using Account Compression program directly."""
+        """Create a REAL Merkle tree via Metaplex Bubblegum create_tree (no simulation)."""
         try:
-            logger.info("Creating REAL on-chain Merkle tree using Account Compression program")
+            logger.info("Creating REAL on-chain Merkle tree using Bubblegum create_tree")
 
             # Ensure account is funded
             if not await self.fund_account_if_needed():
@@ -330,80 +330,54 @@ class RealOnChainClient:
             # Generate tree keypair
             tree_keypair = Keypair()
             tree_address = tree_keypair.pubkey()
-            
             logger.info(f"Creating real Merkle tree on-chain: {tree_address}")
+
+            # Derive Bubblegum tree authority PDA
+            tree_config_pda, config_bump = self.derive_tree_config_pda(tree_address)
 
             # Get recent blockhash
             recent_blockhash = await self.get_recent_blockhash()
 
-            # Create Account Compression program init_empty_merkle_tree instruction
+            # Build Bubblegum create_tree instruction
             import struct
+            bubblegum_discriminator = hashlib.sha256(b"global:create_tree").digest()[:8]
 
-            # Account Compression program init_empty_merkle_tree discriminator
-            # This is the standard discriminator for initializing a merkle tree
-            instruction_discriminator = bytes([0])  # Simple discriminator for init_empty_merkle_tree
-
-            # Pack the instruction data for Account Compression program
-            instruction_data = bytearray()
-            instruction_data.extend(instruction_discriminator)  # 1 byte discriminator
-            instruction_data.extend(struct.pack('<I', max_depth))       # max_depth: u32
-            instruction_data.extend(struct.pack('<I', max_buffer_size))  # max_buffer_size: u32
-
-            logger.info(f"Account Compression instruction data length: {len(instruction_data)} bytes")
-            logger.info(f"Account Compression instruction data: {instruction_data.hex()}")
-
-            # Create instruction for Account Compression program to initialize the tree
-            init_tree_instruction = Instruction(
-                program_id=self.ACCOUNT_COMPRESSION_PROGRAM_ID,
-                accounts=[
-                    AccountMeta(pubkey=tree_address, is_signer=True, is_writable=True),        # merkle_tree
-                    AccountMeta(pubkey=self.payer_keypair.pubkey(), is_signer=False, is_writable=False), # authority
-                    AccountMeta(pubkey=self.NOOP_PROGRAM_ID, is_signer=False, is_writable=False), # noop_program
-                ],
-                data=bytes(instruction_data)
-            )
-
-            # After creating the tree, we need to initialize it with Bubblegum
-            tree_config_pda, config_bump = self.derive_tree_config_pda(tree_address)
-
-            # Bubblegum create_tree_config instruction (simpler approach)
-            bubblegum_discriminator = hashlib.sha256(b"global:create_tree_config").digest()[:8]
-            
             bubblegum_data = bytearray()
-            bubblegum_data.extend(bubblegum_discriminator)
+            bubblegum_data.extend(bubblegum_discriminator)    # 8 bytes
             bubblegum_data.extend(struct.pack('<I', max_depth))
             bubblegum_data.extend(struct.pack('<I', max_buffer_size))
-            bubblegum_data.extend(struct.pack('<?', False))  # public: false
+            bubblegum_data.extend(struct.pack('<?', True))    # public = true
 
             bubblegum_instruction = Instruction(
                 program_id=self.BUBBLEGUM_PROGRAM_ID,
                 accounts=[
-                    AccountMeta(pubkey=tree_config_pda, is_signer=False, is_writable=True),     # tree_config
-                    AccountMeta(pubkey=tree_address, is_signer=False, is_writable=True),       # merkle_tree
-                    AccountMeta(pubkey=self.payer_keypair.pubkey(), is_signer=True, is_writable=True), # payer
-                    AccountMeta(pubkey=self.payer_keypair.pubkey(), is_signer=False, is_writable=False), # tree_creator
-                    AccountMeta(pubkey=self.SYSTEM_PROGRAM_ID, is_signer=False, is_writable=False), # system_program
+                    AccountMeta(pubkey=tree_config_pda, is_signer=False, is_writable=True),          # tree_authority (PDA)
+                    AccountMeta(pubkey=tree_address, is_signer=True, is_writable=True),              # merkle_tree (new account)
+                    AccountMeta(pubkey=self.payer_keypair.pubkey(), is_signer=True, is_writable=True), # tree_creator (signer)
+                    AccountMeta(pubkey=self.payer_keypair.pubkey(), is_signer=True, is_writable=True), # payer (signer)
+                    AccountMeta(pubkey=self.NOOP_PROGRAM_ID, is_signer=False, is_writable=False),    # log_wrapper (noop)
+                    AccountMeta(pubkey=self.ACCOUNT_COMPRESSION_PROGRAM_ID, is_signer=False, is_writable=False), # compression_program
+                    AccountMeta(pubkey=self.SYSTEM_PROGRAM_ID, is_signer=False, is_writable=False),   # system_program
                 ],
                 data=bytes(bubblegum_data)
             )
 
-            # Create transaction with both instructions
+            # Create and send transaction
             message = MessageV0.try_compile(
                 payer=self.payer_keypair.pubkey(),
-                instructions=[init_tree_instruction, bubblegum_instruction],
+                instructions=[bubblegum_instruction],
                 address_lookup_table_accounts=[],
                 recent_blockhash=Hash.from_string(recent_blockhash)
             )
 
             transaction = VersionedTransaction(message, [self.payer_keypair, tree_keypair])
 
-            # Serialize and send transaction
+            # Serialize and send transaction (no simulation)
             serialized_tx = bytes(transaction)
             encoded_tx = base58.b58encode(serialized_tx).decode('utf-8')
 
-            logger.info(f"Sending dual-instruction tree creation transaction to Solana devnet...")
+            logger.info("Sending Bubblegum create_tree transaction to Solana devnet...")
 
-            # Send transaction with proper configuration
             send_response = await self._make_rpc_request(
                 "sendTransaction",
                 [encoded_tx, {
@@ -416,19 +390,18 @@ class RealOnChainClient:
 
             if "result" in send_response:
                 tx_signature = send_response["result"]
-                logger.info(f"Real tree creation transaction sent: {tx_signature}")
+                logger.info(
+                    f"Real tree creation transaction sent: {tx_signature} | "
+                    f"Payer: {self.payer_keypair.pubkey()} | Tree: {tree_address} | Authority: {tree_config_pda}"
+                )
 
-                # Wait for confirmation
+                # Wait briefly and verify on-chain
                 await asyncio.sleep(10)
-
-                # Verify the tree was created successfully
                 verification_result = await self.verify_tree_exists(str(tree_address))
                 logger.info(f"Tree verification result: {verification_result}")
 
                 max_nfts = 2 ** max_depth
-
-                # Store tree info
-                tree_info = TreeInfo(
+                self.trees[str(tree_address)] = TreeInfo(
                     address=str(tree_address),
                     authority=str(tree_config_pda),
                     max_depth=max_depth,
@@ -437,7 +410,6 @@ class RealOnChainClient:
                     current_size=0,
                     creation_signature=tx_signature
                 )
-                self.trees[str(tree_address)] = tree_info
 
                 return {
                     "status": "success",

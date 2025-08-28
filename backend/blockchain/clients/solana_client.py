@@ -12,6 +12,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any, Union
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 import structlog
 from solana.rpc.async_api import AsyncClient
@@ -468,57 +469,75 @@ class SolanaClient:
             # Import the real on-chain client
             from .real_onchain_client import RealOnChainClient
 
-            # Initialize with funded account from keypair file
-            funded_account_secret = "/home/hamza/my_devnet_wallet.json"
-            real_client = RealOnChainClient(
-                rpc_url="https://api.devnet.solana.com",
-                funded_account_secret=funded_account_secret
+            # Use UMI/Metaplex JS to create tree and mint reliably
+            import subprocess, json, os
+            env = os.environ.copy()
+            env.setdefault('SOLANA_KEYPAIR', '/home/hamza/my_devnet_wallet.json')
+            env.setdefault('SOLANA_RPC_URL', 'https://api.devnet.solana.com')
+
+            # 1) Choose tree: reuse persistent tree if provided, else create one (finalized)
+            tree_address = env.get('SOLANA_TREE_ADDRESS')
+            if not tree_address:
+                create_proc = subprocess.run(
+                    ["node", "scripts/create_tree_onchain.js"],
+                    cwd=str(Path(__file__).resolve().parents[2]),
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                try:
+                    create_out = json.loads(create_proc.stdout.strip().splitlines()[-1])
+                except Exception:
+                    raise Exception(f"Tree creation failed: {create_proc.stdout}\n{create_proc.stderr}")
+                if create_out.get('status') != 'success':
+                    raise Exception(f"Tree creation error: {create_out}")
+                tree_address = create_out['tree_address']
+
+            # 2) Mint on that (finalized) tree
+            env['SOLANA_TREE_ADDRESS'] = tree_address
+            env['MINT_METADATA_JSON'] = json.dumps(metadata)
+            mint_proc = subprocess.run(
+                ["node", "scripts/mint_cnft_onchain.js"],
+                cwd=str(Path(__file__).resolve().parents[2]),
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
             )
-
-            # Initialize the client
-            await real_client.initialize()
-
-            # Create or get a Merkle tree for compressed NFTs
-            tree_result = await real_client.create_merkle_tree(
-                max_depth=14,  # Supports up to 16,384 NFTs
-                max_buffer_size=64
-            )
-
-            if tree_result["status"] != "success":
-                raise Exception(f"Failed to create Merkle tree: {tree_result}")
-
-            # Mint the compressed NFT on the tree
-            mint_result = await real_client.mint_compressed_nft(
-                tree_address=tree_result["tree_address"],
-                metadata=metadata,
-                recipient=recipient
-            )
-
-            if mint_result["status"] != "success":
-                raise Exception(f"Failed to mint compressed NFT: {mint_result}")
+            try:
+                mint_out = json.loads(mint_proc.stdout.strip().splitlines()[-1])
+            except Exception:
+                raise Exception(f"Mint failed: {mint_proc.stdout}\n{mint_proc.stderr}")
+            if mint_out.get('status') != 'success':
+                raise Exception(f"Mint error: {mint_out}")
 
             self.logger.info(
                 "Real compressed NFT minted on-chain",
-                mint_address=mint_result["mint_address"],
-                tree_address=mint_result["tree_address"],
-                tx_signature=mint_result["transaction_signature"]
+                tree_address=tree_address,
+                tx_signature=mint_out["transaction_signature"],
             )
+
+            asset_id = mint_out.get("asset_id")
+            leaf_index = mint_out.get("leaf_index")
 
             return {
                 'status': 'success',
-                'mint_address': mint_result["mint_address"],
-                'tree_address': mint_result["tree_address"],
-                'transaction_signature': mint_result["transaction_signature"],
-                'recipient': mint_result["recipient"],
+                'mint_address': asset_id or None,  # For cNFTs, use asset_id as mint identifier
+                'asset_id': asset_id,
+                'leaf_index': leaf_index,
+                'tree_address': tree_address,
+                'transaction_signature': mint_out["transaction_signature"],
+                'recipient': recipient or env['SOLANA_KEYPAIR'],
                 'metadata': metadata,
-                'metadata_uri': mint_result["metadata_uri"],
-                'timestamp': mint_result["timestamp"],
+                'metadata_uri': mint_out.get("metadata_uri"),
+                'timestamp': datetime.now().isoformat(),
                 'network': 'devnet',
                 'type': 'real_onchain_compressed_nft',
-                'program_id': mint_result.get("program_id", "BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY"),
-                'payer': mint_result.get("payer"),
+                'program_id': 'BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY',
+                'payer': None,
                 'is_real_onchain': True,
-                'verification_url': f"https://explorer.solana.com/tx/{mint_result['transaction_signature']}?cluster=devnet"
+                'verification_url': f"https://explorer.solana.com/tx/{mint_out['transaction_signature']}?cluster=devnet"
             }
 
         except Exception as e:

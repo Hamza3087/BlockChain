@@ -1,0 +1,20 @@
+{
+  "token_id": "107",
+  "sei_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+  "solana_mint": null,
+  "tree_address": "erY15sCGJmk3H7y9BLZRLmmLgY8P4We1nGUsgBL5kJM",
+  "transaction_signature": "5n9reXirrgKt5zKaq9YwTz8c5uxPM9DwjA8taebLYUboXxfcS3H8JBbrGWCUGZfRZPpqfDq7sLx13wXWTioe5BpC",
+  "is_real_onchain": true,
+  "metadata_uris": {
+    "solana_uri": "https://metadata.replantworld.io/onchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_107_20250828_134912_solana.json",
+    "offchain_uri": "https://metadata.replantworld.io/offchain/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_107_20250828_134912_offchain.json",
+    "original_uri": "https://metadata.replantworld.io/original/sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc_107_20250828_134912_original.json"
+  },
+  "verification_url": "https://explorer.solana.com/tx/5n9reXirrgKt5zKaq9YwTz8c5uxPM9DwjA8taebLYUboXxfcS3H8JBbrGWCUGZfRZPpqfDq7sLx13wXWTioe5BpC?cluster=devnet",
+  "processing_time": "2025-08-28T13:49:27.490050",
+  "status": "completed",
+  "database_records": {
+    "sei_nft_id": 194,
+    "tree_id": null
+  }
+}

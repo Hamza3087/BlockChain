@@ -1,0 +1,84 @@
+{
+  "name": "Jackfruit",
+  "symbol": "RPLNT",
+  "description": "https://replantworld.io",
+  "image": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Botanical Name",
+      "value": "Artocarpus heterophyllus"
+    },
+    {
+      "trait_type": "IUCN status",
+      "value": "DATA_DEFICIENT"
+    },
+    {
+      "trait_type": "Country",
+      "value": "Zambia"
+    },
+    {
+      "trait_type": "Longitude",
+      "value": "18.285252"
+    },
+    {
+      "trait_type": "Latitude",
+      "value": "7.872891"
+    },
+    {
+      "trait_type": "Is Native",
+      "value": "No"
+    },
+    {
+      "trait_type": "Org/Community",
+      "value": "Replant World"
+    },
+    {
+      "trait_type": "planter",
+      "value": "areson1111"
+    },
+    {
+      "trait_type": "Date planted",
+      "value": "2024-12-03"
+    },
+    {
+      "trait_type": "Sponsor",
+      "value": "Alicja compass2"
+    },
+    {
+      "trait_type": "planting Cost",
+      "value": "$24.00"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://ipfs.filebase.io/ipfs/QmVRUNcXgJfzRMGrRjoyFBoDUrv38PXLmNW1UGjbgqY5dR",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "ReplantWorldCreatorAddress",
+        "share": 100
+      }
+    ]
+  },
+  "collection": {
+    "name": "ReplantWorld Trees",
+    "family": "ReplantWorld"
+  },
+  "migration_data": {
+    "original_contract": "sei1lxsu3g5zsgrrgwgd2d7qplscye2ngyfpq2nm9hmh2h8rjrt8yj9qtdv2vc",
+    "original_token_id": "101",
+    "migration_timestamp": "2025-08-28T11:48:59.302827",
+    "source_blockchain": "sei",
+    "target_blockchain": "solana",
+    "migration_version": "1.0"
+  },
+  "verification": {
+    "original_hash": "c6f6b4e9346e568845124cd6b960f256334df3ab3dde544cd4938eb9d79e4ae3",
+    "solana_hash": "5c6ae000fd242d9d955facce0a7e2d86fa9e0e792756a97abedc22de0249ddac"
+  }
+}
